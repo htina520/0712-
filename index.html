@@ -308,18 +308,18 @@
     }
 
     .node .emoji {
-      font-size: 34px;
+      font-size: 44px;
     }
 
     .node .name {
       fill: var(--ink);
-      font-size: 16px;
+      font-size: 24px;
       font-weight: 900;
     }
 
     .node .level {
       fill: var(--muted);
-      font-size: 12px;
+      font-size: 17px;
       font-weight: 800;
     }
 
@@ -828,29 +828,29 @@
     const relationshipTypes = ["全部", "掠食", "競爭", "共生", "被捕食", "分解"];
 
     const organisms = [
-      { id: "miscanthus", name: "芒草", category: "生產者", level: "生產者", emoji: "🌾", x: 78, y: 225, description: "芒草常見於台灣低海拔山坡，能用陽光製造養分。" },
-      { id: "camphorLeaves", name: "樟樹葉", category: "生產者", level: "生產者", emoji: "🍃", x: 92, y: 365, description: "樟樹是台灣常見樹種，葉子和果實能支持許多森林生物。" },
-      { id: "figTree", name: "榕樹", category: "生產者", level: "生產者", emoji: "🌳", x: 92, y: 70, description: "榕樹會結果，果實能餵飽松鼠、鳥類和猴子等動物。" },
-      { id: "taiwanHare", name: "台灣野兔", category: "草食動物", level: "初級消費者", emoji: "🐰", x: 248, y: 225, description: "台灣野兔會吃草和嫩葉，也可能被猛禽或中型肉食動物捕食。" },
-      { id: "muntjac", name: "山羌", category: "草食動物", level: "初級消費者", emoji: "🦌", x: 250, y: 365, description: "山羌會吃樹葉、嫩芽和果實，是台灣森林裡的草食動物。" },
-      { id: "squirrel", name: "赤腹松鼠", category: "草食動物", level: "初級消費者", emoji: "🐿️", x: 250, y: 70, description: "赤腹松鼠會吃果實、種子和嫩葉，也會成為猛禽的食物。" },
-      { id: "grasshopper", name: "蝗蟲", category: "草食動物", level: "初級消費者", emoji: "🦗", x: 280, y: 500, description: "蝗蟲會吃草葉，是蛙類、鳥類和小型掠食者的食物。" },
-      { id: "snail", name: "蝸牛", category: "草食動物", level: "初級消費者", emoji: "🐌", x: 420, y: 560, description: "蝸牛會吃植物或腐爛葉片，也可能被食蟹獴等動物捕食。" },
-      { id: "frog", name: "斯文豪氏赤蛙", category: "肉食動物", level: "次級消費者", emoji: "🐸", x: 440, y: 360, description: "斯文豪氏赤蛙是台灣常見蛙類，會捕食昆蟲和小型無脊椎動物。" },
-      { id: "mongoose", name: "食蟹獴", category: "肉食動物", level: "次級消費者", emoji: "🐾", x: 500, y: 230, description: "食蟹獴會吃蟹、蛙、蝸牛和小動物，是台灣溪流附近常見的掠食者。" },
-      { id: "snake", name: "赤尾青竹絲", category: "肉食動物", level: "次級消費者", emoji: "🐍", x: 450, y: 86, description: "赤尾青竹絲會捕食青蛙、蜥蜴或小型動物，也可能被猛禽捕食。" },
-      { id: "eagle", name: "大冠鷲", category: "肉食動物", level: "頂級消費者", emoji: "🦅", x: 620, y: 96, description: "大冠鷲是台灣常見猛禽，會捕食蛇、松鼠和其他小動物。" },
-      { id: "bear", name: "台灣黑熊", category: "肉食動物", level: "頂級消費者", emoji: "🐻", x: 650, y: 270, description: "台灣黑熊是雜食性動物，會吃果實，也可能吃小動物，位在森林食物網高層。" },
-      { id: "earthworm", name: "蚯蚓", category: "分解者", level: "分解者", emoji: "🪱", x: 520, y: 470, description: "蚯蚓會幫忙分解落葉，讓養分回到土壤中。" },
-      { id: "millipede", name: "馬陸", category: "分解者", level: "分解者", emoji: "🐛", x: 660, y: 500, description: "馬陸會吃腐爛植物，幫森林把落葉變成土壤養分。" },
-      { id: "mushroom", name: "菇類", category: "分解者", level: "分解者", emoji: "🍄", x: 860, y: 380, description: "菇類能分解枯木或落葉，也可能和植物根部互相幫助。" },
-      { id: "bacteria", name: "細菌", category: "分解者", level: "分解者", emoji: "🧫", x: 860, y: 530, description: "細菌很小，但能幫助分解死亡的動植物。" }
+      { id: "miscanthus", name: "芒草", category: "生產者", level: "生產者", emoji: "🌾", x: 100, y: 300, description: "芒草常見於台灣低海拔山坡，能用陽光製造養分。" },
+      { id: "camphorLeaves", name: "樟樹葉", category: "生產者", level: "生產者", emoji: "🍃", x: 100, y: 520, description: "樟樹是台灣常見樹種，葉子和果實能支持許多森林生物。" },
+      { id: "figTree", name: "榕樹", category: "生產者", level: "生產者", emoji: "🌳", x: 100, y: 90, description: "榕樹會結果，果實能餵飽松鼠、鳥類和猴子等動物。" },
+      { id: "taiwanHare", name: "台灣野兔", category: "草食動物", level: "初級消費者", emoji: "🐰", x: 310, y: 270, description: "台灣野兔會吃草和嫩葉，也可能被猛禽或中型肉食動物捕食。" },
+      { id: "muntjac", name: "山羌", category: "草食動物", level: "初級消費者", emoji: "🦌", x: 310, y: 450, description: "山羌會吃樹葉、嫩芽和果實，是台灣森林裡的草食動物。" },
+      { id: "squirrel", name: "赤腹松鼠", category: "草食動物", level: "初級消費者", emoji: "🐿️", x: 310, y: 90, description: "赤腹松鼠會吃果實、種子和嫩葉，也會成為猛禽的食物。" },
+      { id: "grasshopper", name: "蝗蟲", category: "草食動物", level: "初級消費者", emoji: "🦗", x: 310, y: 640, description: "蝗蟲會吃草葉，是蛙類、鳥類和小型掠食者的食物。" },
+      { id: "snail", name: "蝸牛", category: "草食動物", level: "初級消費者", emoji: "🐌", x: 500, y: 640, description: "蝸牛會吃植物或腐爛葉片，也可能被食蟹獴等動物捕食。" },
+      { id: "frog", name: "斯文豪氏赤蛙", category: "肉食動物", level: "次級消費者", emoji: "🐸", x: 560, y: 480, description: "斯文豪氏赤蛙是台灣常見蛙類，會捕食昆蟲和小型無脊椎動物。" },
+      { id: "mongoose", name: "食蟹獴", category: "肉食動物", level: "次級消費者", emoji: "🐾", x: 620, y: 300, description: "食蟹獴會吃蟹、蛙、蝸牛和小動物，是台灣溪流附近常見的掠食者。" },
+      { id: "snake", name: "赤尾青竹絲", category: "肉食動物", level: "次級消費者", emoji: "🐍", x: 560, y: 120, description: "赤尾青竹絲會捕食青蛙、蜥蜴或小型動物，也可能被猛禽捕食。" },
+      { id: "eagle", name: "大冠鷲", category: "肉食動物", level: "頂級消費者", emoji: "🦅", x: 850, y: 120, description: "大冠鷲是台灣常見猛禽，會捕食蛇、松鼠和其他小動物。" },
+      { id: "bear", name: "台灣黑熊", category: "肉食動物", level: "頂級消費者", emoji: "🐻", x: 850, y: 360, description: "台灣黑熊是雜食性動物，會吃果實，也可能吃小動物，位在森林食物網高層。" },
+      { id: "earthworm", name: "蚯蚓", category: "分解者", level: "分解者", emoji: "🪱", x: 720, y: 650, description: "蚯蚓會幫忙分解落葉，讓養分回到土壤中。" },
+      { id: "millipede", name: "馬陸", category: "分解者", level: "分解者", emoji: "🐛", x: 920, y: 650, description: "馬陸會吃腐爛植物，幫森林把落葉變成土壤養分。" },
+      { id: "mushroom", name: "菇類", category: "分解者", level: "分解者", emoji: "🍄", x: 1080, y: 300, description: "菇類能分解枯木或落葉，也可能和植物根部互相幫助。" },
+      { id: "bacteria", name: "細菌", category: "分解者", level: "分解者", emoji: "🧫", x: 1080, y: 540, description: "細菌很小，但能幫助分解死亡的動植物。" }
     ];
 
     const extraNames = {
-      fallenLeaves: { name: "落葉", category: "分解物", level: "養分來源", emoji: "🍂", x: 260, y: 650 },
-      deadWood: { name: "枯木", category: "分解物", level: "養分來源", emoji: "木", x: 1000, y: 330 },
-      deadOrganisms: { name: "動植物遺體", category: "分解物", level: "養分來源", emoji: "養分", x: 620, y: 620 }
+      fallenLeaves: { name: "落葉", category: "分解物", level: "養分來源", emoji: "🍂", x: 160, y: 700 },
+      deadWood: { name: "枯木", category: "分解物", level: "養分來源", emoji: "木", x: 1080, y: 120 },
+      deadOrganisms: { name: "動植物遺體", category: "分解物", level: "養分來源", emoji: "養分", x: 1080, y: 700 }
     };
 
     const organismOrigins = {
@@ -1258,7 +1258,7 @@
       });
     }
 
-    function nodeNameMarkup(name, firstY = 20) {
+    function nodeNameMarkup(name, firstY = 26) {
       if (name.length <= 4) {
         return `<text class="name" y="${firstY}">${name}</text>`;
       }
@@ -1269,7 +1269,7 @@
       return `
         <text class="name" y="${firstY - 3}">
           <tspan x="0">${first}</tspan>
-          <tspan x="0" dy="17">${second}</tspan>
+          <tspan x="0" dy="25">${second}</tspan>
         </text>
       `;
     }
@@ -1296,8 +1296,8 @@
       group.addEventListener("pointermove", (event) => {
         if (!dragState || dragState.id !== id) return;
         const point = getSvgPoint(event);
-        const x = Math.max(58, Math.min(1142, point.x - dragState.offsetX));
-        const y = Math.max(58, Math.min(702, point.y - dragState.offsetY));
+        const x = Math.max(76, Math.min(1124, point.x - dragState.offsetX));
+        const y = Math.max(76, Math.min(684, point.y - dragState.offsetY));
         if (Math.abs(point.x - dragState.startX) > 3 || Math.abs(point.y - dragState.startY) > 3) {
           dragState.moved = true;
         }
@@ -1332,7 +1332,7 @@
     }
 
     function getNodeRadius(id) {
-      return extraNames[id] ? 46 : 58;
+      return extraNames[id] ? 58 : 76;
     }
 
     function getPlacedNodes() {
@@ -1548,10 +1548,10 @@
           transform: `translate(${organism.x}, ${organism.y})`
         });
         group.innerHTML = `
-          <circle r="58"></circle>
-          <text class="emoji" y="-22">${organism.emoji}</text>
-          ${nodeNameMarkup(organism.name, 18)}
-          <text class="level" y="51">${organism.level}</text>
+          <circle r="76"></circle>
+          <text class="emoji" y="-34">${organism.emoji}</text>
+          ${nodeNameMarkup(organism.name, 24)}
+          <text class="level" y="66">${organism.level}</text>
         `;
         bindNodeDrag(group, organism.id);
         group.addEventListener("keydown", (event) => {
@@ -1571,10 +1571,10 @@
           "aria-label": item.name
         });
         group.innerHTML = `
-          <circle r="46"></circle>
-          <text class="emoji" y="-18">${item.emoji}</text>
-          ${nodeNameMarkup(item.name, 17)}
-          <text class="level" y="46">${item.level}</text>
+          <circle r="58"></circle>
+          <text class="emoji" y="-28">${item.emoji}</text>
+          ${nodeNameMarkup(item.name, 21)}
+          <text class="level" y="55">${item.level}</text>
         `;
         bindNodeDrag(group, id, { selectable: false });
         nodeLayer.append(group);
