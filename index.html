@@ -671,7 +671,7 @@
           <span style="color: var(--gold)"><i class="swatch"></i>能量傳遞</span>
         </div>
         <div class="web-wrap" id="webWrap">
-          <svg id="foodWeb" viewBox="0 0 620 430" role="img" aria-label="食物鏈角色與互動關係圖">
+          <svg id="foodWeb" viewBox="0 0 760 520" role="img" aria-label="食物鏈角色與互動關係圖">
             <defs>
               <marker id="arrowRed" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
                 <path d="M0,0 L0,6 L9,3 z" fill="#c95f3f"></path>
@@ -725,29 +725,29 @@
     const relationshipTypes = ["全部", "掠食", "競爭", "共生", "被捕食", "分解"];
 
     const organisms = [
-      { id: "miscanthus", name: "芒草", category: "生產者", level: "生產者", emoji: "🌾", x: 78, y: 154, description: "芒草常見於台灣低海拔山坡，能用陽光製造養分。" },
-      { id: "camphorLeaves", name: "樟樹葉", category: "生產者", level: "生產者", emoji: "🍃", x: 96, y: 272, description: "樟樹是台灣常見樹種，葉子和果實能支持許多森林生物。" },
-      { id: "figTree", name: "榕樹", category: "生產者", level: "生產者", emoji: "🌳", x: 106, y: 66, description: "榕樹會結果，果實能餵飽松鼠、鳥類和猴子等動物。" },
-      { id: "taiwanHare", name: "台灣野兔", category: "草食動物", level: "初級消費者", emoji: "🐰", x: 222, y: 155, description: "台灣野兔會吃草和嫩葉，也可能被猛禽或中型肉食動物捕食。" },
-      { id: "muntjac", name: "山羌", category: "草食動物", level: "初級消費者", emoji: "🦌", x: 238, y: 280, description: "山羌會吃樹葉、嫩芽和果實，是台灣森林裡的草食動物。" },
-      { id: "squirrel", name: "赤腹松鼠", category: "草食動物", level: "初級消費者", emoji: "🐿️", x: 238, y: 60, description: "赤腹松鼠會吃果實、種子和嫩葉，也會成為猛禽的食物。" },
-      { id: "grasshopper", name: "蝗蟲", category: "草食動物", level: "初級消費者", emoji: "🦗", x: 226, y: 385, description: "蝗蟲會吃草葉，是蛙類、鳥類和小型掠食者的食物。" },
-      { id: "snail", name: "蝸牛", category: "草食動物", level: "初級消費者", emoji: "🐌", x: 340, y: 382, description: "蝸牛會吃植物或腐爛葉片，也可能被食蟹獴等動物捕食。" },
-      { id: "frog", name: "斯文豪氏赤蛙", category: "肉食動物", level: "次級消費者", emoji: "🐸", x: 356, y: 315, description: "斯文豪氏赤蛙是台灣常見蛙類，會捕食昆蟲和小型無脊椎動物。" },
-      { id: "mongoose", name: "食蟹獴", category: "肉食動物", level: "次級消費者", emoji: "🐾", x: 390, y: 220, description: "食蟹獴會吃蟹、蛙、蝸牛和小動物，是台灣溪流附近常見的掠食者。" },
-      { id: "snake", name: "赤尾青竹絲", category: "肉食動物", level: "次級消費者", emoji: "🐍", x: 392, y: 108, description: "赤尾青竹絲會捕食青蛙、蜥蜴或小型動物，也可能被猛禽捕食。" },
-      { id: "eagle", name: "大冠鷲", category: "肉食動物", level: "頂級消費者", emoji: "🦅", x: 532, y: 92, description: "大冠鷲是台灣常見猛禽，會捕食蛇、松鼠和其他小動物。" },
-      { id: "bear", name: "台灣黑熊", category: "肉食動物", level: "頂級消費者", emoji: "🐻", x: 526, y: 254, description: "台灣黑熊是雜食性動物，會吃果實，也可能吃小動物，位在森林食物網高層。" },
-      { id: "earthworm", name: "蚯蚓", category: "分解者", level: "分解者", emoji: "🪱", x: 470, y: 372, description: "蚯蚓會幫忙分解落葉，讓養分回到土壤中。" },
-      { id: "millipede", name: "馬陸", category: "分解者", level: "分解者", emoji: "🐛", x: 566, y: 374, description: "馬陸會吃腐爛植物，幫森林把落葉變成土壤養分。" },
-      { id: "mushroom", name: "菇類", category: "分解者", level: "分解者", emoji: "🍄", x: 514, y: 420, description: "菇類能分解枯木或落葉，也可能和植物根部互相幫助。" },
-      { id: "bacteria", name: "細菌", category: "分解者", level: "分解者", emoji: "🧫", x: 600, y: 424, description: "細菌很小，但能幫助分解死亡的動植物。" }
+      { id: "miscanthus", name: "芒草", category: "生產者", level: "生產者", emoji: "🌾", x: 76, y: 172, description: "芒草常見於台灣低海拔山坡，能用陽光製造養分。" },
+      { id: "camphorLeaves", name: "樟樹葉", category: "生產者", level: "生產者", emoji: "🍃", x: 92, y: 318, description: "樟樹是台灣常見樹種，葉子和果實能支持許多森林生物。" },
+      { id: "figTree", name: "榕樹", category: "生產者", level: "生產者", emoji: "🌳", x: 92, y: 70, description: "榕樹會結果，果實能餵飽松鼠、鳥類和猴子等動物。" },
+      { id: "taiwanHare", name: "台灣野兔", category: "草食動物", level: "初級消費者", emoji: "🐰", x: 242, y: 172, description: "台灣野兔會吃草和嫩葉，也可能被猛禽或中型肉食動物捕食。" },
+      { id: "muntjac", name: "山羌", category: "草食動物", level: "初級消費者", emoji: "🦌", x: 250, y: 318, description: "山羌會吃樹葉、嫩芽和果實，是台灣森林裡的草食動物。" },
+      { id: "squirrel", name: "赤腹松鼠", category: "草食動物", level: "初級消費者", emoji: "🐿️", x: 250, y: 70, description: "赤腹松鼠會吃果實、種子和嫩葉，也會成為猛禽的食物。" },
+      { id: "grasshopper", name: "蝗蟲", category: "草食動物", level: "初級消費者", emoji: "🦗", x: 240, y: 448, description: "蝗蟲會吃草葉，是蛙類、鳥類和小型掠食者的食物。" },
+      { id: "snail", name: "蝸牛", category: "草食動物", level: "初級消費者", emoji: "🐌", x: 380, y: 448, description: "蝸牛會吃植物或腐爛葉片，也可能被食蟹獴等動物捕食。" },
+      { id: "frog", name: "斯文豪氏赤蛙", category: "肉食動物", level: "次級消費者", emoji: "🐸", x: 410, y: 335, description: "斯文豪氏赤蛙是台灣常見蛙類，會捕食昆蟲和小型無脊椎動物。" },
+      { id: "mongoose", name: "食蟹獴", category: "肉食動物", level: "次級消費者", emoji: "🐾", x: 448, y: 224, description: "食蟹獴會吃蟹、蛙、蝸牛和小動物，是台灣溪流附近常見的掠食者。" },
+      { id: "snake", name: "赤尾青竹絲", category: "肉食動物", level: "次級消費者", emoji: "🐍", x: 430, y: 104, description: "赤尾青竹絲會捕食青蛙、蜥蜴或小型動物，也可能被猛禽捕食。" },
+      { id: "eagle", name: "大冠鷲", category: "肉食動物", level: "頂級消費者", emoji: "🦅", x: 620, y: 96, description: "大冠鷲是台灣常見猛禽，會捕食蛇、松鼠和其他小動物。" },
+      { id: "bear", name: "台灣黑熊", category: "肉食動物", level: "頂級消費者", emoji: "🐻", x: 626, y: 270, description: "台灣黑熊是雜食性動物，會吃果實，也可能吃小動物，位在森林食物網高層。" },
+      { id: "earthworm", name: "蚯蚓", category: "分解者", level: "分解者", emoji: "🪱", x: 500, y: 438, description: "蚯蚓會幫忙分解落葉，讓養分回到土壤中。" },
+      { id: "millipede", name: "馬陸", category: "分解者", level: "分解者", emoji: "🐛", x: 620, y: 438, description: "馬陸會吃腐爛植物，幫森林把落葉變成土壤養分。" },
+      { id: "mushroom", name: "菇類", category: "分解者", level: "分解者", emoji: "🍄", x: 710, y: 350, description: "菇類能分解枯木或落葉，也可能和植物根部互相幫助。" },
+      { id: "bacteria", name: "細菌", category: "分解者", level: "分解者", emoji: "🧫", x: 710, y: 458, description: "細菌很小，但能幫助分解死亡的動植物。" }
     ];
 
     const extraNames = {
-      fallenLeaves: { name: "落葉", emoji: "🍂" },
-      deadWood: { name: "枯木", emoji: "木" },
-      deadOrganisms: { name: "動植物遺體", emoji: "養分" }
+      fallenLeaves: { name: "落葉", category: "分解物", level: "養分來源", emoji: "🍂", x: 500, y: 500 },
+      deadWood: { name: "枯木", category: "分解物", level: "養分來源", emoji: "木", x: 710, y: 276 },
+      deadOrganisms: { name: "動植物遺體", category: "分解物", level: "養分來源", emoji: "養分", x: 626, y: 500 }
     };
 
     const relationships = [
@@ -1010,6 +1010,22 @@
             selectAnimal(organism.id);
           }
         });
+        nodeLayer.append(group);
+      });
+
+      Object.entries(extraNames).forEach(([id, item]) => {
+        if (item.x === undefined || item.y === undefined) return;
+        const group = createSvg("g", {
+          class: `node ${relatedIds.has(id) ? "is-related" : ""}`,
+          transform: `translate(${item.x}, ${item.y})`,
+          "aria-label": item.name
+        });
+        group.innerHTML = `
+          <circle r="34"></circle>
+          <text class="emoji" y="-5">${item.emoji}</text>
+          <text class="name" y="18">${item.name}</text>
+          <text class="level" y="33">${item.level}</text>
+        `;
         nodeLayer.append(group);
       });
     }

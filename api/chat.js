@@ -41,6 +41,9 @@ module.exports = async function handler(req, res) {
               "只回答和這個 web app 情境有關的問題：生態圈、食物鏈、食物網、生產者、消費者、分解者、掠食、被捕食、競爭、共生、能量傳遞，以及畫面中的生物。",
               "使用繁體中文，語氣親切，回答要短、清楚、適合小學生。",
               "可以用 1 到 3 個重點說明，不要太長。",
+              "回覆中不要使用任何引號，包含雙引號、單引號、中文引號和書名號。",
+              "回覆中不要使用星號、markdown 粗體、項目符號或特殊裝飾符號。",
+              "標點盡量只使用逗號和句號。",
               "如果使用者離題，請委婉拒絕，並引導回食物鏈或生態圈主題。"
             ].join("\n")
           },
@@ -61,7 +64,9 @@ module.exports = async function handler(req, res) {
       });
     }
 
-    const reply = data.choices?.[0]?.message?.content?.trim();
+    const reply = data.choices?.[0]?.message?.content
+      ?.replace(/["'“”‘’「」『』《》`*#_\[\]<>-]/g, "")
+      .trim();
 
     return res.status(200).json({
       reply: reply || "我現在沒有想到合適的回答，可以再問一次和食物鏈有關的問題嗎？"
