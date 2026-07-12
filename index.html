@@ -671,7 +671,7 @@
           <span style="color: var(--gold)"><i class="swatch"></i>能量傳遞</span>
         </div>
         <div class="web-wrap" id="webWrap">
-          <svg id="foodWeb" viewBox="0 0 760 520" role="img" aria-label="食物鏈角色與互動關係圖">
+          <svg id="foodWeb" viewBox="0 0 900 600" role="img" aria-label="食物鏈角色與互動關係圖">
             <defs>
               <marker id="arrowRed" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
                 <path d="M0,0 L0,6 L9,3 z" fill="#c95f3f"></path>
@@ -745,9 +745,9 @@
     ];
 
     const extraNames = {
-      fallenLeaves: { name: "落葉", category: "分解物", level: "養分來源", emoji: "🍂", x: 500, y: 500 },
-      deadWood: { name: "枯木", category: "分解物", level: "養分來源", emoji: "木", x: 710, y: 276 },
-      deadOrganisms: { name: "動植物遺體", category: "分解物", level: "養分來源", emoji: "養分", x: 626, y: 500 }
+      fallenLeaves: { name: "落葉", category: "分解物", level: "養分來源", emoji: "🍂", x: 450, y: 500 },
+      deadWood: { name: "枯木", category: "分解物", level: "養分來源", emoji: "木", x: 710, y: 262 },
+      deadOrganisms: { name: "動植物遺體", category: "分解物", level: "養分來源", emoji: "養分", x: 560, y: 500 }
     };
 
     const relationships = [
@@ -785,6 +785,33 @@
       ["squirrel", "eagle"],
       ["figTree", "bear"],
       ["figTree", "mushroom"]
+    ];
+
+    const addableOrganisms = [
+      { id: "pangolin", name: "台灣穿山甲", category: "肉食動物", level: "次級消費者", emoji: "🦔", description: "台灣穿山甲會吃螞蟻和白蟻，是台灣森林裡特別的食蟻動物。" },
+      { id: "civet", name: "白鼻心", category: "肉食動物", level: "次級消費者", emoji: "🐾", description: "白鼻心是雜食性動物，會吃果實、昆蟲和小動物。" },
+      { id: "macaque", name: "台灣獼猴", category: "草食動物", level: "初級消費者", emoji: "🐒", description: "台灣獼猴會吃果實、嫩葉和種子，也會幫植物散布種子。" },
+      { id: "owl", name: "領角鴞", category: "肉食動物", level: "頂級消費者", emoji: "🦉", description: "領角鴞是夜行性猛禽，會捕食昆蟲、蜥蜴和小型哺乳動物。" },
+      { id: "lizard", name: "斯文豪氏攀蜥", category: "肉食動物", level: "次級消費者", emoji: "🦎", description: "斯文豪氏攀蜥常在樹幹活動，會捕食昆蟲。" },
+      { id: "butterflyLarva", name: "蝴蝶幼蟲", category: "草食動物", level: "初級消費者", emoji: "🐛", description: "蝴蝶幼蟲會吃植物葉片，是許多鳥類和蜥蜴的食物。" },
+      { id: "cicada", name: "蟬", category: "草食動物", level: "初級消費者", emoji: "🪲", description: "蟬會吸食植物汁液，也可能被鳥類、蜥蜴或猛禽捕食。" },
+      { id: "termite", name: "白蟻", category: "分解者", level: "分解者", emoji: "🐜", description: "白蟻會分解枯木，也會成為台灣穿山甲的重要食物。" }
+    ];
+
+    const addableRelationships = [
+      { from: "pangolin", to: "termite", type: "掠食", label: "台灣穿山甲吃白蟻", explanation: "台灣穿山甲會吃白蟻，能量從白蟻傳給穿山甲。" },
+      { from: "termite", to: "deadWood", type: "分解", label: "白蟻分解枯木", explanation: "白蟻會啃食枯木，幫助分解植物殘骸。" },
+      { from: "civet", to: "figTree", type: "掠食", label: "白鼻心吃榕果", explanation: "白鼻心會吃果實，也可能幫助種子散布。" },
+      { from: "civet", to: "snail", type: "掠食", label: "白鼻心吃蝸牛", explanation: "白鼻心也會吃小型動物或無脊椎動物。" },
+      { from: "macaque", to: "figTree", type: "掠食", label: "台灣獼猴吃榕果", explanation: "台灣獼猴吃榕果，植物能量傳給獼猴。" },
+      { from: "macaque", to: "bear", type: "競爭", label: "台灣獼猴和台灣黑熊競爭果實", explanation: "牠們都會吃果實，果實少時可能競爭。" },
+      { from: "owl", to: "lizard", type: "掠食", label: "領角鴞捕食攀蜥", explanation: "領角鴞可能捕食蜥蜴，是夜晚的掠食者。" },
+      { from: "owl", to: "squirrel", type: "掠食", label: "領角鴞可能捕食赤腹松鼠", explanation: "領角鴞可能捕食小型哺乳動物。" },
+      { from: "lizard", to: "cicada", type: "掠食", label: "斯文豪氏攀蜥吃蟬", explanation: "攀蜥會捕食昆蟲，能量從昆蟲傳給攀蜥。" },
+      { from: "lizard", to: "butterflyLarva", type: "掠食", label: "斯文豪氏攀蜥吃蝴蝶幼蟲", explanation: "攀蜥會捕食小型昆蟲和幼蟲。" },
+      { from: "butterflyLarva", to: "camphorLeaves", type: "掠食", label: "蝴蝶幼蟲吃葉片", explanation: "蝴蝶幼蟲吃植物葉片，是初級消費者。" },
+      { from: "cicada", to: "figTree", type: "掠食", label: "蟬吸食樹汁", explanation: "蟬會吸食植物汁液，取得植物提供的能量。" },
+      { from: "eagle", to: "pangolin", type: "掠食", label: "大冠鷲可能捕食小型穿山甲", explanation: "猛禽有機會捕食較小或受傷的動物。" }
     ];
 
     let selectedCategory = "草食動物";
@@ -874,6 +901,91 @@
       });
       if (options.marker) line.setAttribute("marker-end", options.marker);
       return line;
+    }
+
+    function getNodeRadius(id) {
+      return extraNames[id] ? 26 : 43;
+    }
+
+    function getPlacedNodes() {
+      return [
+        ...organisms.map((organism) => ({
+          id: organism.id,
+          x: organism.x,
+          y: organism.y,
+          radius: getNodeRadius(organism.id)
+        })),
+        ...Object.entries(extraNames)
+          .filter(([, item]) => item.x !== undefined && item.y !== undefined)
+          .map(([id, item]) => ({
+            id,
+            x: item.x,
+            y: item.y,
+            radius: getNodeRadius(id)
+          }))
+      ];
+    }
+
+    function isOpenPosition(x, y, radius = 43) {
+      return getPlacedNodes().every((node) => {
+        const dx = x - node.x;
+        const dy = y - node.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        return distance >= radius + node.radius + 10;
+      });
+    }
+
+    function findOpenPosition(category) {
+      const columns = {
+        "草食動物": [170, 280, 390, 500],
+        "肉食動物": [430, 540, 650, 760, 840],
+        "分解者": [500, 610, 720, 830]
+      };
+      const rows = [58, 140, 222, 304, 386, 468, 548];
+      const xs = columns[category] || [360, 470, 580];
+
+      for (const x of xs) {
+        for (const y of rows) {
+          if (isOpenPosition(x, y)) return { x, y };
+        }
+      }
+
+      for (let y = 58; y <= 548; y += 72) {
+        for (let x = 64; x <= 840; x += 76) {
+          if (isOpenPosition(x, y)) return { x, y };
+        }
+      }
+
+      return null;
+    }
+
+    function addMentionedOrganisms(text) {
+      let added = false;
+      addableOrganisms.forEach((candidate) => {
+        if (!text.includes(candidate.name)) return;
+        if (organisms.some((organism) => organism.id === candidate.id)) return;
+
+        const position = findOpenPosition(candidate.category);
+        if (!position) return;
+
+        organisms.push({ ...candidate, ...position });
+        addableRelationships
+          .filter((relationship) => relationship.from === candidate.id || relationship.to === candidate.id)
+          .forEach((relationship) => {
+            const hasRelationship = relationships.some((existing) =>
+              existing.from === relationship.from &&
+              existing.to === relationship.to &&
+              existing.type === relationship.type
+            );
+            const fromExists = getOrganism(relationship.from);
+            const toExists = getOrganism(relationship.to);
+            if (!hasRelationship && fromExists && toExists) relationships.push(relationship);
+          });
+        added = true;
+      });
+
+      if (added) renderAll();
+      return added;
     }
 
     function renderCategoryButtons() {
@@ -1084,10 +1196,14 @@
     function appendChatMessage(text, sender) {
       const bubble = document.createElement("div");
       bubble.className = `chat-bubble ${sender}`;
-      bubble.textContent = text;
+      bubble.textContent = sender === "ai" ? cleanTutorReply(text) : text;
       chatMessages.append(bubble);
       chatMessages.scrollTop = chatMessages.scrollHeight;
       return bubble;
+    }
+
+    function cleanTutorReply(text) {
+      return text.replace(/["'“”‘’「」『』《》`*#_\[\]<>-]/g, "");
     }
 
     function buildTutorMessage(question) {
@@ -1100,6 +1216,8 @@
         `目前選到的生物：${selected.name}，分類：${selected.category}，層級：${selected.level}。`,
         `目前關係篩選：${selectedRelationshipType}。`,
         `畫面上的相關關係：${visible}。`,
+        `如果需要舉其他台灣動物，優先使用這些可加入圖中的名稱：${addableOrganisms.map((organism) => organism.name).join("，")}。`,
+        `回答時若提到上述名稱，前端會把該動物加入食物網。`,
         `學生問題：${question}`
       ].join("\n");
     }
@@ -1137,14 +1255,17 @@
       if (!question) return;
 
       appendChatMessage(question, "user");
+      addMentionedOrganisms(question);
       chatInput.value = "";
       chatSend.disabled = true;
       const pending = appendChatMessage("我想一下...", "ai");
 
       try {
-        pending.textContent = await sendTutorMessage(question);
+        const reply = cleanTutorReply(await sendTutorMessage(question));
+        pending.textContent = reply;
+        addMentionedOrganisms(`${question}\n${reply}`);
       } catch (error) {
-        pending.textContent = error.message;
+        pending.textContent = cleanTutorReply(error.message);
       } finally {
         chatSend.disabled = false;
         chatInput.focus();
