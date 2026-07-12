@@ -725,19 +725,23 @@
     const relationshipTypes = ["全部", "掠食", "競爭", "共生", "被捕食", "分解"];
 
     const organisms = [
-      { id: "grass", name: "草", category: "生產者", level: "生產者", emoji: "🌱", x: 82, y: 188, description: "草會利用陽光製造養分，是許多草食動物的重要食物。" },
-      { id: "leaves", name: "樹葉", category: "生產者", level: "生產者", emoji: "🍃", x: 92, y: 312, description: "樹葉是植物的一部分，可以被鹿等草食動物取食。" },
-      { id: "tree", name: "樹", category: "生產者", level: "生產者", emoji: "🌳", x: 110, y: 74, description: "樹是森林中的生產者，也能提供許多生物棲息的地方。" },
-      { id: "rabbit", name: "兔子", category: "草食動物", level: "初級消費者", emoji: "🐰", x: 238, y: 180, description: "兔子主要吃草和嫩葉，是許多肉食動物的食物來源。" },
-      { id: "deer", name: "鹿", category: "草食動物", level: "初級消費者", emoji: "🦌", x: 250, y: 315, description: "鹿會吃樹葉和草，常在森林或草原中活動。" },
-      { id: "grasshopper", name: "蚱蜢", category: "草食動物", level: "初級消費者", emoji: "🦗", x: 240, y: 82, description: "蚱蜢常吃草葉，也可能成為青蛙的食物。" },
-      { id: "frog", name: "青蛙", category: "肉食動物", level: "次級消費者", emoji: "🐸", x: 378, y: 80, description: "青蛙會捕食昆蟲，例如蚱蜢，是小型肉食動物。" },
-      { id: "snake", name: "蛇", category: "肉食動物", level: "次級消費者", emoji: "🐍", x: 390, y: 178, description: "蛇會捕食青蛙，也可能被老鷹捕食。" },
-      { id: "eagle", name: "老鷹", category: "肉食動物", level: "頂級消費者", emoji: "🦅", x: 528, y: 118, description: "老鷹位在食物鏈較高層，會捕食蛇、兔子等動物。" },
-      { id: "tiger", name: "老虎", category: "肉食動物", level: "頂級消費者", emoji: "🐯", x: 520, y: 315, description: "老虎是大型肉食動物，會捕食鹿等草食動物。" },
-      { id: "earthworm", name: "蚯蚓", category: "分解者", level: "分解者", emoji: "🪱", x: 348, y: 366, description: "蚯蚓會幫忙分解落葉，讓養分回到土壤中。" },
-      { id: "mushroom", name: "菇類", category: "分解者", level: "分解者", emoji: "🍄", x: 468, y: 388, description: "菇類能分解枯木或落葉，也可能和植物根部互相幫助。" },
-      { id: "bacteria", name: "細菌", category: "分解者", level: "分解者", emoji: "🧫", x: 570, y: 390, description: "細菌很小，但能幫助分解死亡的動植物。" }
+      { id: "miscanthus", name: "芒草", category: "生產者", level: "生產者", emoji: "🌾", x: 78, y: 154, description: "芒草常見於台灣低海拔山坡，能用陽光製造養分。" },
+      { id: "camphorLeaves", name: "樟樹葉", category: "生產者", level: "生產者", emoji: "🍃", x: 96, y: 272, description: "樟樹是台灣常見樹種，葉子和果實能支持許多森林生物。" },
+      { id: "figTree", name: "榕樹", category: "生產者", level: "生產者", emoji: "🌳", x: 106, y: 66, description: "榕樹會結果，果實能餵飽松鼠、鳥類和猴子等動物。" },
+      { id: "taiwanHare", name: "台灣野兔", category: "草食動物", level: "初級消費者", emoji: "🐰", x: 222, y: 155, description: "台灣野兔會吃草和嫩葉，也可能被猛禽或中型肉食動物捕食。" },
+      { id: "muntjac", name: "山羌", category: "草食動物", level: "初級消費者", emoji: "🦌", x: 238, y: 280, description: "山羌會吃樹葉、嫩芽和果實，是台灣森林裡的草食動物。" },
+      { id: "squirrel", name: "赤腹松鼠", category: "草食動物", level: "初級消費者", emoji: "🐿️", x: 238, y: 60, description: "赤腹松鼠會吃果實、種子和嫩葉，也會成為猛禽的食物。" },
+      { id: "grasshopper", name: "蝗蟲", category: "草食動物", level: "初級消費者", emoji: "🦗", x: 226, y: 385, description: "蝗蟲會吃草葉，是蛙類、鳥類和小型掠食者的食物。" },
+      { id: "snail", name: "蝸牛", category: "草食動物", level: "初級消費者", emoji: "🐌", x: 340, y: 382, description: "蝸牛會吃植物或腐爛葉片，也可能被食蟹獴等動物捕食。" },
+      { id: "frog", name: "斯文豪氏赤蛙", category: "肉食動物", level: "次級消費者", emoji: "🐸", x: 356, y: 315, description: "斯文豪氏赤蛙是台灣常見蛙類，會捕食昆蟲和小型無脊椎動物。" },
+      { id: "mongoose", name: "食蟹獴", category: "肉食動物", level: "次級消費者", emoji: "🐾", x: 390, y: 220, description: "食蟹獴會吃蟹、蛙、蝸牛和小動物，是台灣溪流附近常見的掠食者。" },
+      { id: "snake", name: "赤尾青竹絲", category: "肉食動物", level: "次級消費者", emoji: "🐍", x: 392, y: 108, description: "赤尾青竹絲會捕食青蛙、蜥蜴或小型動物，也可能被猛禽捕食。" },
+      { id: "eagle", name: "大冠鷲", category: "肉食動物", level: "頂級消費者", emoji: "🦅", x: 532, y: 92, description: "大冠鷲是台灣常見猛禽，會捕食蛇、松鼠和其他小動物。" },
+      { id: "bear", name: "台灣黑熊", category: "肉食動物", level: "頂級消費者", emoji: "🐻", x: 526, y: 254, description: "台灣黑熊是雜食性動物，會吃果實，也可能吃小動物，位在森林食物網高層。" },
+      { id: "earthworm", name: "蚯蚓", category: "分解者", level: "分解者", emoji: "🪱", x: 470, y: 372, description: "蚯蚓會幫忙分解落葉，讓養分回到土壤中。" },
+      { id: "millipede", name: "馬陸", category: "分解者", level: "分解者", emoji: "🐛", x: 566, y: 374, description: "馬陸會吃腐爛植物，幫森林把落葉變成土壤養分。" },
+      { id: "mushroom", name: "菇類", category: "分解者", level: "分解者", emoji: "🍄", x: 514, y: 420, description: "菇類能分解枯木或落葉，也可能和植物根部互相幫助。" },
+      { id: "bacteria", name: "細菌", category: "分解者", level: "分解者", emoji: "🧫", x: 600, y: 424, description: "細菌很小，但能幫助分解死亡的動植物。" }
     ];
 
     const extraNames = {
@@ -747,35 +751,44 @@
     };
 
     const relationships = [
-      { from: "rabbit", to: "grass", type: "掠食", label: "兔子吃草", explanation: "兔子吃草，草的能量傳給兔子。" },
-      { from: "deer", to: "leaves", type: "掠食", label: "鹿吃樹葉", explanation: "鹿吃樹葉，植物能量進入鹿的身體。" },
-      { from: "grasshopper", to: "grass", type: "掠食", label: "蚱蜢吃草", explanation: "蚱蜢吃植物，所以牠是初級消費者。" },
-      { from: "frog", to: "grasshopper", type: "掠食", label: "青蛙吃蚱蜢", explanation: "青蛙捕食蚱蜢，能量繼續往上傳。" },
-      { from: "snake", to: "frog", type: "掠食", label: "蛇吃青蛙", explanation: "蛇捕食青蛙，蛇位在青蛙之上的層級。" },
-      { from: "eagle", to: "snake", type: "掠食", label: "老鷹捕食蛇", explanation: "老鷹可能捕食蛇，是蛇的掠食者。" },
-      { from: "eagle", to: "rabbit", type: "掠食", label: "老鷹捕食兔子", explanation: "同一個食物網可以有不同路徑。" },
-      { from: "tiger", to: "deer", type: "掠食", label: "老虎捕食鹿", explanation: "老虎捕食鹿，是較高層級的消費者。" },
-      { from: "rabbit", to: "deer", type: "競爭", label: "兔子和鹿競爭植物", explanation: "兔子和鹿都會吃植物，食物少時可能競爭。" },
-      { from: "tree", to: "mushroom", type: "共生", label: "有些菇類和樹互相幫助", explanation: "有些菇類和樹根能互相交換養分。" },
+      { from: "taiwanHare", to: "miscanthus", type: "掠食", label: "台灣野兔吃芒草", explanation: "台灣野兔吃草，芒草的能量傳給野兔。" },
+      { from: "muntjac", to: "camphorLeaves", type: "掠食", label: "山羌吃樟樹葉", explanation: "山羌吃葉子和嫩芽，植物能量進入山羌身體。" },
+      { from: "squirrel", to: "figTree", type: "掠食", label: "赤腹松鼠吃榕果", explanation: "赤腹松鼠吃榕樹果實，是森林中的初級消費者。" },
+      { from: "grasshopper", to: "miscanthus", type: "掠食", label: "蝗蟲吃芒草", explanation: "蝗蟲吃草葉，能量從植物傳到昆蟲。" },
+      { from: "snail", to: "camphorLeaves", type: "掠食", label: "蝸牛吃葉片", explanation: "蝸牛會啃食植物或腐爛葉片。" },
+      { from: "frog", to: "grasshopper", type: "掠食", label: "斯文豪氏赤蛙吃蝗蟲", explanation: "赤蛙捕食昆蟲，能量繼續往上傳。" },
+      { from: "mongoose", to: "frog", type: "掠食", label: "食蟹獴捕食赤蛙", explanation: "食蟹獴會捕食蛙類和其他小動物。" },
+      { from: "mongoose", to: "snail", type: "掠食", label: "食蟹獴吃蝸牛", explanation: "食蟹獴也會吃蝸牛等小型動物。" },
+      { from: "snake", to: "frog", type: "掠食", label: "赤尾青竹絲捕食赤蛙", explanation: "赤尾青竹絲會捕食蛙類，是蛙類的掠食者。" },
+      { from: "eagle", to: "snake", type: "掠食", label: "大冠鷲捕食赤尾青竹絲", explanation: "大冠鷲可能捕食蛇類，位在食物網較高層。" },
+      { from: "eagle", to: "squirrel", type: "掠食", label: "大冠鷲捕食赤腹松鼠", explanation: "猛禽可能捕食松鼠，形成森林食物鏈。" },
+      { from: "bear", to: "figTree", type: "掠食", label: "台灣黑熊吃榕果", explanation: "台灣黑熊會吃果實，也會幫助種子散布。" },
+      { from: "bear", to: "muntjac", type: "掠食", label: "台灣黑熊可能捕食山羌", explanation: "台灣黑熊是雜食性動物，偶爾可能捕食小型或受傷動物。" },
+      { from: "taiwanHare", to: "muntjac", type: "競爭", label: "台灣野兔和山羌競爭植物", explanation: "牠們都會吃植物，食物少時可能競爭。" },
+      { from: "squirrel", to: "bear", type: "競爭", label: "赤腹松鼠和台灣黑熊競爭果實", explanation: "牠們都會吃果實，成熟果實少時可能競爭。" },
+      { from: "figTree", to: "mushroom", type: "共生", label: "菇類和樹根互相幫助", explanation: "有些菇類能和樹根交換養分，是共生關係。" },
       { from: "earthworm", to: "fallenLeaves", type: "分解", label: "蚯蚓分解落葉", explanation: "蚯蚓分解落葉，讓養分回到土壤。" },
+      { from: "millipede", to: "fallenLeaves", type: "分解", label: "馬陸分解落葉", explanation: "馬陸吃腐爛植物，幫助森林土壤形成。" },
       { from: "mushroom", to: "deadWood", type: "分解", label: "菇類分解枯木", explanation: "菇類分解枯木，把養分重新送回環境。" },
       { from: "bacteria", to: "deadOrganisms", type: "分解", label: "細菌分解動植物遺體", explanation: "細菌分解死亡的動植物，是重要的分解者。" }
     ];
 
     const energyFlows = [
-      ["grass", "grasshopper"],
+      ["miscanthus", "grasshopper"],
       ["grasshopper", "frog"],
       ["frog", "snake"],
       ["snake", "eagle"],
-      ["grass", "rabbit"],
-      ["rabbit", "eagle"],
-      ["leaves", "deer"],
-      ["deer", "tiger"],
-      ["tree", "mushroom"]
+      ["miscanthus", "taiwanHare"],
+      ["camphorLeaves", "muntjac"],
+      ["muntjac", "bear"],
+      ["figTree", "squirrel"],
+      ["squirrel", "eagle"],
+      ["figTree", "bear"],
+      ["figTree", "mushroom"]
     ];
 
     let selectedCategory = "草食動物";
-    let selectedAnimalId = "rabbit";
+    let selectedAnimalId = "taiwanHare";
     let selectedRelationshipType = "全部";
     let showEnergy = false;
 
