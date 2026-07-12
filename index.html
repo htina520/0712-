@@ -308,18 +308,18 @@
     }
 
     .node .emoji {
-      font-size: 44px;
+      font-size: 38px;
     }
 
     .node .name {
       fill: var(--ink);
-      font-size: 24px;
+      font-size: 21px;
       font-weight: 900;
     }
 
     .node .level {
       fill: var(--muted);
-      font-size: 17px;
+      font-size: 15px;
       font-weight: 800;
     }
 
@@ -403,6 +403,55 @@
       min-height: 0;
       overflow: auto;
       padding-right: 2px;
+    }
+
+    .relationship-layout {
+      display: grid;
+      grid-template-columns: minmax(92px, 0.78fr) minmax(0, 1.22fr);
+      gap: 8px;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    .species-name-list,
+    .relationship-detail-panel {
+      min-height: 0;
+      overflow: auto;
+      padding: 9px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+    }
+
+    .species-name-list {
+      display: grid;
+      align-content: start;
+      gap: 7px;
+    }
+
+    .species-name-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 7px 8px;
+      border-radius: 8px;
+      background: #f7fbf2;
+      color: var(--green-dark);
+      font-size: 0.9rem;
+      font-weight: 900;
+      line-height: 1.2;
+    }
+
+    .species-name-item.is-selected {
+      background: var(--gold-soft);
+      color: var(--ink);
+    }
+
+    .relationship-detail-panel .animal-card {
+      margin-bottom: 8px;
+      padding: 0;
+      border: 0;
+      background: transparent;
     }
 
     .relationship-item,
@@ -787,12 +836,17 @@
       </section>
 
       <aside class="panel info-panel" aria-label="生物資訊與關係">
-        <article class="animal-card" id="animalInfo"></article>
         <section>
           <h2>3. 看互動關係</h2>
           <div class="filter-row" id="relationshipFilters"></div>
         </section>
-        <section class="relationship-list" id="relationshipList"></section>
+        <section class="relationship-layout">
+          <div class="species-name-list" id="speciesNameList" aria-label="相關物種名稱"></div>
+          <div class="relationship-detail-panel">
+            <article class="animal-card" id="animalInfo"></article>
+            <section class="relationship-list" id="relationshipList"></section>
+          </div>
+        </section>
       </aside>
     </div>
   </main>
@@ -816,7 +870,7 @@
   </section>
 
   <script>
-    const GAS_ENDPOINT = ""; // 貼上 GAS Web App 部署網址
+    const GAS_ENDPOINT = "/api/save";
     let userName = "";
     let userEmail = "";
     let pendingLogs = [];
@@ -977,6 +1031,7 @@
     const animalInfo = document.querySelector("#animalInfo");
     const relationshipFilters = document.querySelector("#relationshipFilters");
     const relationshipList = document.querySelector("#relationshipList");
+    const speciesNameList = document.querySelector("#speciesNameList");
     const webWrap = document.querySelector("#webWrap");
     const edgeLayer = document.querySelector("#edgeLayer");
     const energyLayer = document.querySelector("#energyLayer");
@@ -1046,12 +1101,11 @@
 
       const response = await fetch(GAS_ENDPOINT, {
         method: "POST",
-        mode: "no-cors",
-        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)
       });
 
-      return response.type === "opaque" || response.ok;
+      return response.ok;
     }
 
     function recordLog(action, detail = {}) {
@@ -1258,18 +1312,20 @@
       });
     }
 
-    function nodeNameMarkup(name, firstY = 26) {
-      if (name.length <= 4) {
+    function nodeNameMarkup(name, firstY = 16) {
+      if (name.length <= 3) {
         return `<text class="name" y="${firstY}">${name}</text>`;
       }
 
-      const splitAt = Math.ceil(name.length / 2);
-      const first = name.slice(0, splitAt);
-      const second = name.slice(splitAt);
+      const chunkSize = name.length <= 6 ? 3 : Math.ceil(name.length / 3);
+      const chunks = [];
+      for (let index = 0; index < name.length; index += chunkSize) {
+        chunks.push(name.slice(index, index + chunkSize));
+      }
+
       return `
-        <text class="name" y="${firstY - 3}">
-          <tspan x="0">${first}</tspan>
-          <tspan x="0" dy="25">${second}</tspan>
+        <text class="name" y="${firstY - 2}">
+          ${chunks.map((chunk, index) => `<tspan x="0" ${index === 0 ? "" : "dy=\"20\""}>${chunk}</tspan>`).join("")}
         </text>
       `;
     }
@@ -1500,6 +1556,26 @@
     function renderRelationships() {
       const visible = getVisibleRelationships();
       relationshipList.innerHTML = "";
+      speciesNameList.innerHTML = "";
+
+      const selected = getOrganism(selectedAnimalId);
+      const speciesMap = new Map();
+      speciesMap.set(selectedAnimalId, selected);
+
+      visible.forEach((relationship) => {
+        const from = getOrganism(relationship.from);
+        const to = getOrganism(relationship.to);
+        speciesMap.set(relationship.from, from);
+        speciesMap.set(relationship.to, to);
+      });
+
+      speciesMap.forEach((organism, id) => {
+        const item = document.createElement("div");
+        item.className = "species-name-item" + (id === selectedAnimalId ? " is-selected" : "");
+        item.textContent = `${organism.emoji} ${organism.name}`;
+        speciesNameList.append(item);
+      });
+
       if (visible.length === 0) {
         relationshipList.innerHTML = `<div class="empty-state"><p>目前還沒有這種關係資料，試試其他關係按鈕。</p></div>`;
         return;
@@ -1512,9 +1588,9 @@
         item.className = "relationship-item";
         item.innerHTML = `
           <div class="relationship-heading">
-            <span>${from.emoji} ${from.name}</span>
+            <span>${from.name}</span>
             <span>→</span>
-            <span>${to.emoji} ${to.name}</span>
+            <span>${to.name}</span>
             <span class="relationship-type ${getRelationshipClass(relationship.type)}">${relationship.type}</span>
           </div>
           <p><strong>${relationship.label}：</strong>${relationship.explanation}</p>
@@ -1549,9 +1625,9 @@
         });
         group.innerHTML = `
           <circle r="76"></circle>
-          <text class="emoji" y="-34">${organism.emoji}</text>
-          ${nodeNameMarkup(organism.name, 24)}
-          <text class="level" y="66">${organism.level}</text>
+          <text class="emoji" y="-30">${organism.emoji}</text>
+          ${nodeNameMarkup(organism.name, 10)}
+          <text class="level" y="58">${organism.level}</text>
         `;
         bindNodeDrag(group, organism.id);
         group.addEventListener("keydown", (event) => {
@@ -1572,9 +1648,9 @@
         });
         group.innerHTML = `
           <circle r="58"></circle>
-          <text class="emoji" y="-28">${item.emoji}</text>
-          ${nodeNameMarkup(item.name, 21)}
-          <text class="level" y="55">${item.level}</text>
+          <text class="emoji" y="-22">${item.emoji}</text>
+          ${nodeNameMarkup(item.name, 8)}
+          <text class="level" y="45">${item.level}</text>
         `;
         bindNodeDrag(group, id, { selectable: false });
         nodeLayer.append(group);
