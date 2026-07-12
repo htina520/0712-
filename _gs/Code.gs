@@ -1,5 +1,6 @@
 function doPost(e) {
   try {
+    var spreadsheetUrl = "https://docs.google.com/spreadsheets/d/1PmsFHopLF08Icdi3rsNjF6pOoSKDM5yigIlEHdbkJ9I/edit?gid=0#gid=0";
     var spreadsheetId = "1PmsFHopLF08Icdi3rsNjF6pOoSKDM5yigIlEHdbkJ9I";
 
     if (!e || !e.postData || !e.postData.contents) {
