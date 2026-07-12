@@ -308,7 +308,7 @@
     }
 
     .node .emoji {
-      font-size: 31px;
+      font-size: 27px;
     }
 
     .node .name {
@@ -600,6 +600,78 @@
       opacity: 0.68;
     }
 
+    .user-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      display: grid;
+      place-items: center;
+      padding: 18px;
+      background: rgba(16, 36, 28, 0.48);
+    }
+
+    .user-modal.is-hidden {
+      display: none;
+    }
+
+    .user-modal-card {
+      width: min(420px, 100%);
+      padding: 20px;
+      border-radius: 12px;
+      background: #fff;
+      box-shadow: 0 24px 70px rgba(10, 34, 24, 0.28);
+    }
+
+    .user-modal-card h2 {
+      margin-bottom: 6px;
+      font-size: 1.32rem;
+    }
+
+    .user-modal-card p {
+      margin: 0 0 14px;
+      color: var(--muted);
+      font-size: 0.94rem;
+    }
+
+    .user-field {
+      display: grid;
+      gap: 6px;
+      margin-bottom: 12px;
+      color: var(--green-dark);
+      font-weight: 900;
+    }
+
+    .user-field input {
+      width: 100%;
+      min-height: 44px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 9px 11px;
+      color: var(--ink);
+      background: #f9fdf6;
+      font: inherit;
+    }
+
+    .modal-error {
+      min-height: 22px;
+      margin-bottom: 10px;
+      color: #b6482d;
+      font-size: 0.9rem;
+      font-weight: 800;
+    }
+
+    .modal-confirm {
+      width: 100%;
+      color: #fff;
+      background: var(--green);
+      border-color: var(--green);
+    }
+
+    .modal-confirm:disabled {
+      cursor: wait;
+      opacity: 0.72;
+    }
+
     @media (max-width: 900px), (max-height: 680px) {
       body {
         overflow: auto;
@@ -647,6 +719,23 @@
   </style>
 </head>
 <body>
+  <section class="user-modal" id="userModal" aria-labelledby="userModalTitle" aria-modal="true" role="dialog">
+    <form class="user-modal-card" id="userForm" novalidate>
+      <h2 id="userModalTitle">開始生態食物鏈探險</h2>
+      <p>請先輸入姓名和 email，老師可以用這些資料查看你的操作紀錄。</p>
+      <label class="user-field">
+        姓名
+        <input id="userNameInput" name="userName" type="text" autocomplete="name" required>
+      </label>
+      <label class="user-field">
+        Email
+        <input id="userEmailInput" name="userEmail" type="email" autocomplete="email" required>
+      </label>
+      <div class="modal-error" id="userModalError" aria-live="polite"></div>
+      <button class="modal-confirm" id="userConfirmButton" type="submit">確認開始</button>
+    </form>
+  </section>
+
   <main class="app">
     <header class="topbar">
       <div>
@@ -727,6 +816,14 @@
   </section>
 
   <script>
+    const GAS_ENDPOINT = ""; // 貼上 GAS Web App 部署網址
+    let userName = "";
+    let userEmail = "";
+    let pendingLogs = [];
+    let isSendingLogs = false;
+    const LOG_BATCH_SIZE = 5;
+    const LOG_STORAGE_KEY = "foodChainPendingLogs";
+
     const categories = ["肉食動物", "草食動物", "分解者"];
     const relationshipTypes = ["全部", "掠食", "競爭", "共生", "被捕食", "分解"];
 
@@ -747,13 +844,13 @@
       { id: "earthworm", name: "蚯蚓", category: "分解者", level: "分解者", emoji: "🪱", x: 500, y: 438, description: "蚯蚓會幫忙分解落葉，讓養分回到土壤中。" },
       { id: "millipede", name: "馬陸", category: "分解者", level: "分解者", emoji: "🐛", x: 620, y: 438, description: "馬陸會吃腐爛植物，幫森林把落葉變成土壤養分。" },
       { id: "mushroom", name: "菇類", category: "分解者", level: "分解者", emoji: "🍄", x: 710, y: 350, description: "菇類能分解枯木或落葉，也可能和植物根部互相幫助。" },
-      { id: "bacteria", name: "細菌", category: "分解者", level: "分解者", emoji: "🧫", x: 710, y: 458, description: "細菌很小，但能幫助分解死亡的動植物。" }
+      { id: "bacteria", name: "細菌", category: "分解者", level: "分解者", emoji: "🧫", x: 830, y: 470, description: "細菌很小，但能幫助分解死亡的動植物。" }
     ];
 
     const extraNames = {
-      fallenLeaves: { name: "落葉", category: "分解物", level: "養分來源", emoji: "🍂", x: 450, y: 500 },
-      deadWood: { name: "枯木", category: "分解物", level: "養分來源", emoji: "木", x: 710, y: 262 },
-      deadOrganisms: { name: "動植物遺體", category: "分解物", level: "養分來源", emoji: "養分", x: 560, y: 500 }
+      fallenLeaves: { name: "落葉", category: "分解物", level: "養分來源", emoji: "🍂", x: 430, y: 620 },
+      deadWood: { name: "枯木", category: "分解物", level: "養分來源", emoji: "木", x: 830, y: 300 },
+      deadOrganisms: { name: "動植物遺體", category: "分解物", level: "養分來源", emoji: "養分", x: 620, y: 620 }
     };
 
     const organismOrigins = {
@@ -894,11 +991,159 @@
     const chatForm = document.querySelector("#chatForm");
     const chatInput = document.querySelector("#chatInput");
     const chatSend = document.querySelector("#chatSend");
+    const userModal = document.querySelector("#userModal");
+    const userForm = document.querySelector("#userForm");
+    const userNameInput = document.querySelector("#userNameInput");
+    const userEmailInput = document.querySelector("#userEmailInput");
+    const userModalError = document.querySelector("#userModalError");
+    const userConfirmButton = document.querySelector("#userConfirmButton");
     let dragState = null;
 
     function getOrganism(id) {
       return organisms.find((organism) => organism.id === id) || extraNames[id];
     }
+
+    function isValidEmail(email) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    }
+
+    function buildLogPayload(logItems) {
+      return {
+        userName,
+        userEmail,
+        log: JSON.stringify(logItems)
+      };
+    }
+
+    function savePendingLogs() {
+      try {
+        localStorage.setItem(LOG_STORAGE_KEY, JSON.stringify({
+          userName,
+          userEmail,
+          logs: pendingLogs
+        }));
+      } catch (error) {
+        console.warn("Unable to save pending logs:", error);
+      }
+    }
+
+    function loadPendingLogsForUser() {
+      try {
+        const saved = JSON.parse(localStorage.getItem(LOG_STORAGE_KEY) || "null");
+        if (saved && saved.userEmail === userEmail && Array.isArray(saved.logs)) {
+          pendingLogs = [...saved.logs, ...pendingLogs];
+        }
+      } catch (error) {
+        console.warn("Unable to load pending logs:", error);
+      }
+    }
+
+    async function postToGas(payload) {
+      if (!GAS_ENDPOINT) {
+        console.info("GAS_ENDPOINT 尚未設定，資料暫存在前端。", payload);
+        return false;
+      }
+
+      const response = await fetch(GAS_ENDPOINT, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify(payload)
+      });
+
+      return response.type === "opaque" || response.ok;
+    }
+
+    function recordLog(action, detail = {}) {
+      if (!userName || !userEmail) return;
+      pendingLogs.push({
+        time: new Date().toISOString(),
+        action,
+        detail
+      });
+      savePendingLogs();
+
+      if (pendingLogs.length >= LOG_BATCH_SIZE) {
+        flushLogs();
+      }
+    }
+
+    async function flushLogs(force = false) {
+      if (isSendingLogs || pendingLogs.length === 0) return;
+      if (!force && pendingLogs.length < LOG_BATCH_SIZE) return;
+
+      const logsToSend = pendingLogs.slice(0, LOG_BATCH_SIZE);
+      isSendingLogs = true;
+      let sent = false;
+
+      try {
+        sent = await postToGas(buildLogPayload(logsToSend));
+        if (sent) {
+          pendingLogs = pendingLogs.slice(logsToSend.length);
+          savePendingLogs();
+        }
+      } catch (error) {
+        console.error("GAS log send failed:", error);
+      } finally {
+        isSendingLogs = false;
+        if (sent && pendingLogs.length >= LOG_BATCH_SIZE) flushLogs();
+      }
+    }
+
+    async function submitInitialUser(userInfo) {
+      const initialLog = [{
+        time: new Date().toISOString(),
+        action: "user_start",
+        detail: { page: "生態圈食物鏈探險" }
+      }];
+      return postToGas({
+        userName: userInfo.userName,
+        userEmail: userInfo.userEmail,
+        log: JSON.stringify(initialLog)
+      });
+    }
+
+    userForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const inputName = userNameInput.value.trim();
+      const inputEmail = userEmailInput.value.trim();
+
+      if (!inputName) {
+        userModalError.textContent = "請輸入姓名。";
+        userNameInput.focus();
+        return;
+      }
+
+      if (!isValidEmail(inputEmail)) {
+        userModalError.textContent = "請輸入正確的 email 格式。";
+        userEmailInput.focus();
+        return;
+      }
+
+      userConfirmButton.disabled = true;
+      userModalError.textContent = "";
+      userName = inputName;
+      userEmail = inputEmail;
+      loadPendingLogsForUser();
+
+      const sent = await submitInitialUser({ userName, userEmail }).catch((error) => {
+        console.error("Initial user submit failed:", error);
+        return false;
+      });
+
+      if (!sent) {
+        pendingLogs.unshift({
+          time: new Date().toISOString(),
+          action: "user_start",
+          detail: { page: "生態圈食物鏈探險", pendingReason: "waiting_for_gas" }
+        });
+        savePendingLogs();
+      }
+
+      userModal.classList.add("is-hidden");
+      recordLog("user_confirmed", { userName, userEmail });
+      userConfirmButton.disabled = false;
+    });
 
     function getOrganismOrigin(organism) {
       if (!organism) return "原生種";
@@ -1013,6 +1258,22 @@
       });
     }
 
+    function nodeNameMarkup(name, firstY = 15) {
+      if (name.length <= 4) {
+        return `<text class="name" y="${firstY}">${name}</text>`;
+      }
+
+      const splitAt = Math.ceil(name.length / 2);
+      const first = name.slice(0, splitAt);
+      const second = name.slice(splitAt);
+      return `
+        <text class="name" y="${firstY - 3}">
+          <tspan x="0">${first}</tspan>
+          <tspan x="0" dy="14">${second}</tspan>
+        </text>
+      `;
+    }
+
     function bindNodeDrag(group, id, options = {}) {
       group.addEventListener("pointerdown", (event) => {
         if (event.button !== undefined && event.button !== 0) return;
@@ -1050,7 +1311,17 @@
         group.classList.remove("is-dragging");
         group.releasePointerCapture(event.pointerId);
         const shouldSelect = dragState.selectable && !dragState.moved;
+        const moved = dragState.moved;
+        const item = getOrganism(id);
         dragState = null;
+        if (moved) {
+          recordLog("drag_node", {
+            id,
+            name: item.name,
+            x: Math.round(item.x),
+            y: Math.round(item.y)
+          });
+        }
         if (shouldSelect) selectAnimal(id);
       });
 
@@ -1061,7 +1332,7 @@
     }
 
     function getNodeRadius(id) {
-      return extraNames[id] ? 26 : 43;
+      return extraNames[id] ? 38 : 46;
     }
 
     function getPlacedNodes() {
@@ -1116,11 +1387,16 @@
       return null;
     }
 
-    function addMentionedOrganisms(text) {
-      let added = false;
-      addableOrganisms.forEach((candidate) => {
+    function classifyMentionedOrganisms(text, options = {}) {
+      let changed = false;
+      let selectedMention = null;
+      const allKnown = [...organisms, ...addableOrganisms];
+
+      allKnown.forEach((candidate) => {
         const names = [candidate.name, ...(candidate.aliases || [])];
         if (!names.some((name) => text.includes(name))) return;
+        selectedMention = candidate;
+
         if (organisms.some((organism) => organism.id === candidate.id)) return;
 
         const position = findOpenPosition(candidate.category);
@@ -1139,11 +1415,26 @@
             const toExists = getOrganism(relationship.to);
             if (!hasRelationship && fromExists && toExists) relationships.push(relationship);
           });
-        added = true;
+        changed = true;
       });
 
-      if (added) renderAll();
-      return added;
+      if (selectedMention && options.select !== false && selectedMention.category !== "生產者") {
+        selectedAnimalId = selectedMention.id;
+        selectedCategory = selectedMention.category;
+        selectedRelationshipType = "全部";
+        recordLog("classify_mentioned_organism", {
+          id: selectedMention.id,
+          name: selectedMention.name,
+          category: selectedMention.category,
+          level: selectedMention.level,
+          origin: getOrganismOrigin(selectedMention),
+          wasAdded: changed
+        });
+        changed = true;
+      }
+
+      if (changed) renderAll();
+      return selectedMention;
     }
 
     function renderCategoryButtons() {
@@ -1257,10 +1548,10 @@
           transform: `translate(${organism.x}, ${organism.y})`
         });
         group.innerHTML = `
-          <circle r="43"></circle>
-          <text class="emoji" y="-7">${organism.emoji}</text>
-          <text class="name" y="18">${organism.name}</text>
-          <text class="level" y="34">${organism.level}</text>
+          <circle r="46"></circle>
+          <text class="emoji" y="-14">${organism.emoji}</text>
+          ${nodeNameMarkup(organism.name, 14)}
+          <text class="level" y="40">${organism.level}</text>
         `;
         bindNodeDrag(group, organism.id);
         group.addEventListener("keydown", (event) => {
@@ -1280,10 +1571,10 @@
           "aria-label": item.name
         });
         group.innerHTML = `
-          <circle r="34"></circle>
-          <text class="emoji" y="-5">${item.emoji}</text>
-          <text class="name" y="18">${item.name}</text>
-          <text class="level" y="33">${item.level}</text>
+          <circle r="38"></circle>
+          <text class="emoji" y="-12">${item.emoji}</text>
+          ${nodeNameMarkup(item.name, 13)}
+          <text class="level" y="38">${item.level}</text>
         `;
         bindNodeDrag(group, id, { selectable: false });
         nodeLayer.append(group);
@@ -1303,18 +1594,28 @@
       selectedCategory = category;
       selectedRelationshipType = "全部";
       selectedAnimalId = organisms.find((organism) => organism.category === category).id;
+      recordLog("select_category", { category, selectedAnimalId });
       renderAll();
     }
 
     function selectAnimal(id) {
+      const organism = getOrganism(id);
       selectedAnimalId = id;
-      selectedCategory = getOrganism(id).category === "生產者" ? selectedCategory : getOrganism(id).category;
+      selectedCategory = organism.category === "生產者" ? selectedCategory : organism.category;
       selectedRelationshipType = "全部";
+      recordLog("select_animal", {
+        id,
+        name: organism.name,
+        category: organism.category,
+        level: organism.level,
+        origin: getOrganismOrigin(organism)
+      });
       renderAll();
     }
 
     function selectRelationshipType(type) {
       selectedRelationshipType = type;
+      recordLog("select_relationship_type", { type, selectedAnimalId });
       renderRelationshipFilters();
       renderRelationships();
     }
@@ -1331,6 +1632,7 @@
 
     energyToggle.addEventListener("click", () => {
       showEnergy = !showEnergy;
+      recordLog("toggle_energy", { showEnergy });
       renderFoodWeb();
       renderEnergyState();
     });
@@ -1391,10 +1693,15 @@
     }
 
     tutorButton.addEventListener("click", () => {
-      toggleChat(!chatWidget.classList.contains("is-open"));
+      const open = !chatWidget.classList.contains("is-open");
+      recordLog("toggle_ai_tutor", { open });
+      toggleChat(open);
     });
 
-    chatClose.addEventListener("click", () => toggleChat(false));
+    chatClose.addEventListener("click", () => {
+      recordLog("toggle_ai_tutor", { open: false });
+      toggleChat(false);
+    });
 
     chatInput.addEventListener("keydown", (event) => {
       if (event.key === "Enter" && !event.shiftKey) {
@@ -1409,7 +1716,11 @@
       if (!question) return;
 
       appendChatMessage(question, "user");
-      addMentionedOrganisms(question);
+      recordLog("chat_input", { text: question });
+      const mentioned = classifyMentionedOrganisms(question);
+      if (mentioned) {
+        appendChatMessage(`${mentioned.name}已分類到${mentioned.category}，${mentioned.level}，${getOrganismOrigin(mentioned)}。`, "ai");
+      }
       chatInput.value = "";
       chatSend.disabled = true;
       const pending = appendChatMessage("我想一下...", "ai");
@@ -1417,7 +1728,7 @@
       try {
         const reply = cleanTutorReply(await sendTutorMessage(question));
         pending.textContent = reply;
-        addMentionedOrganisms(`${question}\n${reply}`);
+        classifyMentionedOrganisms(reply, { select: false });
       } catch (error) {
         pending.textContent = cleanTutorReply(error.message);
       } finally {
@@ -1425,6 +1736,14 @@
         chatInput.focus();
       }
     });
+
+    document.addEventListener("visibilitychange", () => {
+      if (document.visibilityState === "hidden") {
+        flushLogs(true);
+      }
+    });
+
+    window.addEventListener("online", () => flushLogs(true));
 
     renderAll();
   </script>
