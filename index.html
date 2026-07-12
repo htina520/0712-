@@ -1,0 +1,870 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>生態圈食物鏈探險</title>
+  <style>
+    :root {
+      --bg: #eef8e9;
+      --panel: #ffffff;
+      --panel-soft: #f7fbf2;
+      --text: #183226;
+      --muted: #557064;
+      --primary: #26735f;
+      --primary-dark: #165443;
+      --accent: #f4b942;
+      --accent-soft: #fff2c7;
+      --danger: #c95f3f;
+      --line: #d7e7d7;
+      --shadow: 0 18px 45px rgba(30, 74, 48, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(244, 185, 66, 0.22), transparent 28rem),
+        linear-gradient(180deg, #f8fff2 0%, var(--bg) 100%);
+      font-family: "Microsoft JhengHei", "PingFang TC", system-ui, sans-serif;
+      font-size: 16px;
+      line-height: 1.5;
+    }
+
+    button {
+      min-height: 44px;
+      border: 0;
+      border-radius: 8px;
+      font: inherit;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+
+    button:focus-visible {
+      outline: 3px solid rgba(244, 185, 66, 0.85);
+      outline-offset: 3px;
+    }
+
+    .app {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 24px 0 36px;
+    }
+
+    .hero {
+      padding: 22px 0 18px;
+    }
+
+    .hero h1 {
+      margin: 0;
+      color: var(--primary-dark);
+      font-size: clamp(2rem, 4vw, 3.8rem);
+      line-height: 1.1;
+      letter-spacing: 0;
+    }
+
+    .hero p {
+      max-width: 680px;
+      margin: 12px 0 0;
+      color: var(--muted);
+      font-size: 1.1rem;
+    }
+
+    .workspace {
+      display: grid;
+      grid-template-columns: minmax(280px, 0.82fr) minmax(340px, 1.18fr);
+      gap: 18px;
+      align-items: start;
+    }
+
+    .panel,
+    .food-chain {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.9);
+      box-shadow: var(--shadow);
+    }
+
+    .panel {
+      padding: 18px;
+    }
+
+    .panel h2,
+    .food-chain h2 {
+      margin: 0 0 12px;
+      color: var(--primary-dark);
+      font-size: 1.15rem;
+      letter-spacing: 0;
+    }
+
+    .section-block + .section-block {
+      margin-top: 22px;
+    }
+
+    .button-grid {
+      display: grid;
+      gap: 10px;
+    }
+
+    .category-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .category-btn,
+    .animal-btn,
+    .filter-btn {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      padding: 10px 12px;
+      color: var(--text);
+      background: var(--panel-soft);
+      border: 1px solid var(--line);
+      transition: transform 140ms ease, border-color 140ms ease, background 140ms ease;
+    }
+
+    .category-btn:hover,
+    .animal-btn:hover,
+    .filter-btn:hover {
+      transform: translateY(-1px);
+      border-color: #accdad;
+      background: #fbfff7;
+    }
+
+    .category-btn.is-selected,
+    .animal-btn.is-selected,
+    .filter-btn.is-selected {
+      border-color: #d69915;
+      background: var(--accent-soft);
+      box-shadow: inset 0 0 0 2px rgba(244, 185, 66, 0.36);
+      font-weight: 700;
+    }
+
+    .animal-grid {
+      grid-template-columns: repeat(auto-fit, minmax(118px, 1fr));
+    }
+
+    .animal-btn {
+      min-height: 74px;
+      flex-direction: column;
+      padding: 12px 8px;
+    }
+
+    .animal-emoji {
+      font-size: 1.7rem;
+      line-height: 1;
+    }
+
+    .animal-name {
+      overflow-wrap: anywhere;
+    }
+
+    .animal-card {
+      padding: 18px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #ffffff 0%, #f8fff2 100%);
+      border: 1px solid var(--line);
+    }
+
+    .animal-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    .animal-title .big-emoji {
+      display: grid;
+      width: 56px;
+      height: 56px;
+      place-items: center;
+      border-radius: 8px;
+      background: var(--accent-soft);
+      font-size: 2.1rem;
+    }
+
+    .animal-title h2 {
+      margin: 0;
+      font-size: 1.7rem;
+    }
+
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 12px 0;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      min-height: 30px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: #e5f2e5;
+      color: var(--primary-dark);
+      font-weight: 700;
+      font-size: 0.92rem;
+    }
+
+    .filter-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .filter-btn {
+      width: auto;
+      min-width: 76px;
+      padding-inline: 12px;
+    }
+
+    .relationship-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .relationship-item,
+    .empty-state {
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+    }
+
+    .relationship-heading {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 4px;
+      font-weight: 800;
+    }
+
+    .relationship-type {
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: #edf5ff;
+      color: #225277;
+      font-size: 0.85rem;
+      font-weight: 800;
+    }
+
+    .relationship-type.predation {
+      background: #fff0e8;
+      color: var(--danger);
+    }
+
+    .relationship-type.competition {
+      background: #f3efff;
+      color: #5a3d8f;
+    }
+
+    .relationship-type.mutualism {
+      background: #e9f7f1;
+      color: #26735f;
+    }
+
+    .relationship-type.decomposition {
+      background: #f2eee4;
+      color: #6f5432;
+    }
+
+    .relationship-item p,
+    .empty-state p,
+    .animal-card p {
+      margin: 0;
+      color: var(--muted);
+    }
+
+    .food-chain {
+      margin-top: 18px;
+      padding: 18px;
+    }
+
+    .chain-track {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .chain-level {
+      position: relative;
+      min-height: 132px;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel-soft);
+    }
+
+    .chain-level:not(:last-child)::after {
+      content: "→";
+      position: absolute;
+      top: 50%;
+      right: -15px;
+      z-index: 2;
+      width: 20px;
+      transform: translateY(-50%);
+      color: var(--primary);
+      font-weight: 900;
+      text-align: center;
+    }
+
+    .chain-level h3 {
+      margin: 0 0 8px;
+      color: var(--primary-dark);
+      font-size: 1rem;
+    }
+
+    .chain-organisms {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .chain-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 5px 8px;
+      border-radius: 999px;
+      background: #fff;
+      border: 1px solid var(--line);
+      font-size: 0.92rem;
+      overflow-wrap: anywhere;
+    }
+
+    .chain-chip.is-selected {
+      background: var(--accent);
+      border-color: #c88a0a;
+      color: #251a04;
+      font-weight: 900;
+    }
+
+    .selected-note {
+      margin-top: 8px;
+      color: var(--primary-dark);
+      font-weight: 800;
+    }
+
+    @media (max-width: 880px) {
+      .workspace {
+        grid-template-columns: 1fr;
+      }
+
+      .chain-track {
+        grid-template-columns: 1fr;
+      }
+
+      .chain-level {
+        min-height: auto;
+      }
+
+      .chain-level:not(:last-child)::after {
+        content: "↓";
+        top: auto;
+        right: 50%;
+        bottom: -20px;
+        transform: translateX(50%);
+      }
+    }
+
+    @media (max-width: 560px) {
+      .app {
+        width: min(100% - 20px, 1180px);
+        padding-top: 12px;
+      }
+
+      .hero {
+        padding-top: 12px;
+      }
+
+      .category-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .panel,
+      .food-chain {
+        padding: 14px;
+      }
+
+      .animal-title {
+        align-items: flex-start;
+      }
+
+      .animal-title h2 {
+        font-size: 1.42rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <section class="hero" aria-labelledby="pageTitle">
+      <h1 id="pageTitle">生態圈食物鏈探險</h1>
+      <p>選一種生物，看看牠在食物鏈中的角色，以及牠和其他生物的關係。</p>
+    </section>
+
+    <div class="workspace">
+      <section class="panel" aria-label="選擇區">
+        <div class="section-block">
+          <h2>1. 選擇角色類型</h2>
+          <div class="button-grid category-grid" id="categoryButtons"></div>
+        </div>
+
+        <div class="section-block">
+          <h2>2. 按按鈕 A 選擇生物</h2>
+          <div class="button-grid animal-grid" id="animalButtons"></div>
+        </div>
+      </section>
+
+      <section class="panel" aria-label="生物資訊與關係">
+        <article class="animal-card" id="animalInfo"></article>
+
+        <div class="section-block">
+          <h2>3. 按按鈕 B 看牠們的關係</h2>
+          <div class="filter-row" id="relationshipFilters"></div>
+          <div class="relationship-list" id="relationshipList"></div>
+        </div>
+      </section>
+    </div>
+
+    <section class="food-chain" aria-labelledby="foodChainTitle">
+      <h2 id="foodChainTitle">食物鏈層級</h2>
+      <div class="chain-track" id="foodChain"></div>
+    </section>
+  </main>
+
+  <script>
+    const categories = ["肉食動物", "草食動物", "分解者"];
+    const relationshipTypes = ["全部", "掠食", "競爭", "共生", "被捕食", "分解"];
+    const levels = ["生產者", "初級消費者", "次級消費者", "頂級消費者", "分解者"];
+
+    const organisms = [
+      {
+        id: "grass",
+        name: "草",
+        category: "生產者",
+        level: "生產者",
+        emoji: "🌱",
+        description: "草會利用陽光製造養分，是許多草食動物的重要食物。"
+      },
+      {
+        id: "leaves",
+        name: "樹葉",
+        category: "生產者",
+        level: "生產者",
+        emoji: "🍃",
+        description: "樹葉是植物的一部分，可以被鹿等草食動物取食。"
+      },
+      {
+        id: "tree",
+        name: "樹",
+        category: "生產者",
+        level: "生產者",
+        emoji: "🌳",
+        description: "樹是森林中的生產者，也能提供許多生物棲息的地方。"
+      },
+      {
+        id: "rabbit",
+        name: "兔子",
+        category: "草食動物",
+        level: "初級消費者",
+        emoji: "🐰",
+        description: "兔子主要吃草和嫩葉，是許多肉食動物的食物來源。"
+      },
+      {
+        id: "deer",
+        name: "鹿",
+        category: "草食動物",
+        level: "初級消費者",
+        emoji: "🦌",
+        description: "鹿會吃樹葉和草，常在森林或草原中活動。"
+      },
+      {
+        id: "grasshopper",
+        name: "蚱蜢",
+        category: "草食動物",
+        level: "初級消費者",
+        emoji: "🦗",
+        description: "蚱蜢常吃草葉，也可能成為青蛙或鳥類的食物。"
+      },
+      {
+        id: "frog",
+        name: "青蛙",
+        category: "肉食動物",
+        level: "次級消費者",
+        emoji: "🐸",
+        description: "青蛙會捕食昆蟲，例如蚱蜢，是小型肉食動物。"
+      },
+      {
+        id: "snake",
+        name: "蛇",
+        category: "肉食動物",
+        level: "次級消費者",
+        emoji: "🐍",
+        description: "蛇會捕食青蛙、小鳥或小型哺乳動物，也可能被老鷹捕食。"
+      },
+      {
+        id: "eagle",
+        name: "老鷹",
+        category: "肉食動物",
+        level: "頂級消費者",
+        emoji: "🦅",
+        description: "老鷹位在食物鏈較高層，會捕食蛇、兔子等動物。"
+      },
+      {
+        id: "tiger",
+        name: "老虎",
+        category: "肉食動物",
+        level: "頂級消費者",
+        emoji: "🐯",
+        description: "老虎是大型肉食動物，會捕食鹿等草食動物。"
+      },
+      {
+        id: "earthworm",
+        name: "蚯蚓",
+        category: "分解者",
+        level: "分解者",
+        emoji: "🪱",
+        description: "蚯蚓會幫忙分解落葉，讓養分回到土壤中。"
+      },
+      {
+        id: "mushroom",
+        name: "菇類",
+        category: "分解者",
+        level: "分解者",
+        emoji: "🍄",
+        description: "菇類能分解枯木或落葉，也可能和植物根部互相幫助。"
+      },
+      {
+        id: "bacteria",
+        name: "細菌",
+        category: "分解者",
+        level: "分解者",
+        emoji: "🧫",
+        description: "細菌很小，但能幫助分解死亡的動植物。"
+      }
+    ];
+
+    const relationships = [
+      {
+        from: "rabbit",
+        to: "grass",
+        type: "掠食",
+        label: "兔子吃草",
+        explanation: "兔子吃草，所以兔子和草之間是取食關係。"
+      },
+      {
+        from: "deer",
+        to: "leaves",
+        type: "掠食",
+        label: "鹿吃樹葉",
+        explanation: "鹿會取食樹葉，是初級消費者。"
+      },
+      {
+        from: "grasshopper",
+        to: "grass",
+        type: "掠食",
+        label: "蚱蜢吃草",
+        explanation: "蚱蜢吃植物，所以牠位在生產者之上的層級。"
+      },
+      {
+        from: "frog",
+        to: "grasshopper",
+        type: "掠食",
+        label: "青蛙吃蚱蜢",
+        explanation: "青蛙會捕食昆蟲，因此青蛙是蚱蜢的掠食者。"
+      },
+      {
+        from: "snake",
+        to: "frog",
+        type: "掠食",
+        label: "蛇吃青蛙",
+        explanation: "蛇會捕食青蛙，所以蛇位在青蛙之上的食物鏈層級。"
+      },
+      {
+        from: "eagle",
+        to: "snake",
+        type: "掠食",
+        label: "老鷹捕食蛇",
+        explanation: "老鷹可能捕食蛇，因此老鷹是蛇的掠食者。"
+      },
+      {
+        from: "eagle",
+        to: "rabbit",
+        type: "掠食",
+        label: "老鷹捕食兔子",
+        explanation: "老鷹也可能捕食兔子，讓食物鏈形成不同路徑。"
+      },
+      {
+        from: "tiger",
+        to: "deer",
+        type: "掠食",
+        label: "老虎捕食鹿",
+        explanation: "老虎會捕食鹿，是較高層級的消費者。"
+      },
+      {
+        from: "rabbit",
+        to: "deer",
+        type: "競爭",
+        label: "兔子和鹿競爭植物",
+        explanation: "兔子和鹿都會吃植物，當食物少時可能會競爭。"
+      },
+      {
+        from: "tree",
+        to: "mushroom",
+        type: "共生",
+        label: "有些菇類和樹互相幫助",
+        explanation: "有些菇類和樹根可以互相交換養分，是共生關係的例子。"
+      },
+      {
+        from: "earthworm",
+        to: "fallenLeaves",
+        type: "分解",
+        label: "蚯蚓分解落葉",
+        explanation: "蚯蚓幫忙分解落葉，讓養分回到土壤。"
+      },
+      {
+        from: "mushroom",
+        to: "deadWood",
+        type: "分解",
+        label: "菇類分解枯木",
+        explanation: "菇類會分解枯木，把養分重新送回環境。"
+      },
+      {
+        from: "bacteria",
+        to: "deadOrganisms",
+        type: "分解",
+        label: "細菌分解動植物遺體",
+        explanation: "細菌幫助分解死亡的動植物，是生態系重要的分解者。"
+      }
+    ];
+
+    const extraNames = {
+      fallenLeaves: { name: "落葉", emoji: "🍂" },
+      deadWood: { name: "枯木", emoji: "🪵" },
+      deadOrganisms: { name: "動植物遺體", emoji: "♻" }
+    };
+
+    let selectedCategory = "草食動物";
+    let selectedAnimalId = "rabbit";
+    let selectedRelationshipType = "全部";
+
+    const categoryButtons = document.querySelector("#categoryButtons");
+    const animalButtons = document.querySelector("#animalButtons");
+    const animalInfo = document.querySelector("#animalInfo");
+    const relationshipFilters = document.querySelector("#relationshipFilters");
+    const relationshipList = document.querySelector("#relationshipList");
+    const foodChain = document.querySelector("#foodChain");
+
+    function getOrganism(id) {
+      return organisms.find((organism) => organism.id === id) || extraNames[id];
+    }
+
+    function createButton(text, className, isSelected, onClick) {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = className + (isSelected ? " is-selected" : "");
+      button.textContent = isSelected ? "✓ " + text : text;
+      button.setAttribute("aria-pressed", String(isSelected));
+      button.addEventListener("click", onClick);
+      return button;
+    }
+
+    function renderCategoryButtons() {
+      categoryButtons.innerHTML = "";
+      categories.forEach((category, index) => {
+        const button = createButton(
+          `${index + 1} ${category}`,
+          "category-btn",
+          category === selectedCategory,
+          () => selectCategory(category)
+        );
+        categoryButtons.append(button);
+      });
+    }
+
+    function renderAnimalButtons() {
+      animalButtons.innerHTML = "";
+      organisms
+        .filter((organism) => organism.category === selectedCategory)
+        .forEach((organism) => {
+          const button = document.createElement("button");
+          const isSelected = organism.id === selectedAnimalId;
+          button.type = "button";
+          button.className = "animal-btn" + (isSelected ? " is-selected" : "");
+          button.setAttribute("aria-pressed", String(isSelected));
+          button.innerHTML = `
+            <span class="animal-emoji" aria-hidden="true">${organism.emoji}</span>
+            <span class="animal-name">${isSelected ? "✓ 目前選擇：" : ""}${organism.name}</span>
+          `;
+          button.addEventListener("click", () => selectAnimal(organism.id));
+          animalButtons.append(button);
+        });
+    }
+
+    function renderSelectedAnimal() {
+      const organism = getOrganism(selectedAnimalId);
+      animalInfo.innerHTML = `
+        <div class="animal-title">
+          <span class="big-emoji" aria-hidden="true">${organism.emoji}</span>
+          <div>
+            <h2>${organism.name}</h2>
+            <div class="selected-note">目前選擇</div>
+          </div>
+        </div>
+        <div class="tag-row">
+          <span class="tag">${organism.category}</span>
+          <span class="tag">${organism.level}</span>
+        </div>
+        <p>${organism.description}</p>
+      `;
+    }
+
+    function renderRelationshipFilters() {
+      relationshipFilters.innerHTML = "";
+      relationshipTypes.forEach((type) => {
+        const button = createButton(
+          type,
+          "filter-btn",
+          type === selectedRelationshipType,
+          () => selectRelationshipType(type)
+        );
+        relationshipFilters.append(button);
+      });
+    }
+
+    function getVisibleRelationships() {
+      const related = relationships.flatMap((relationship) => {
+        if (relationship.from === selectedAnimalId) {
+          return [relationship];
+        }
+
+        if (relationship.to === selectedAnimalId && relationship.type === "掠食") {
+          const fromOrganism = getOrganism(relationship.from);
+          const toOrganism = getOrganism(relationship.to);
+          return [{
+            from: relationship.to,
+            to: relationship.from,
+            type: "被捕食",
+            label: `${toOrganism.name}被${fromOrganism.name}捕食`,
+            explanation: `${fromOrganism.name}可能會捕食${toOrganism.name}，所以${toOrganism.name}在這段關係中是獵物。`
+          }];
+        }
+
+        if (relationship.to === selectedAnimalId && ["競爭", "共生"].includes(relationship.type)) {
+          return [relationship];
+        }
+
+        return [];
+      });
+
+      if (selectedRelationshipType === "全部") {
+        return related;
+      }
+
+      return related.filter((relationship) => relationship.type === selectedRelationshipType);
+    }
+
+    function renderRelationships() {
+      const visibleRelationships = getVisibleRelationships();
+      relationshipList.innerHTML = "";
+
+      if (visibleRelationships.length === 0) {
+        relationshipList.innerHTML = `
+          <div class="empty-state">
+            <p>目前還沒有這種關係資料，試試其他關係按鈕。</p>
+          </div>
+        `;
+        return;
+      }
+
+      visibleRelationships.forEach((relationship) => {
+        const from = getOrganism(relationship.from);
+        const to = getOrganism(relationship.to);
+        const item = document.createElement("article");
+        item.className = "relationship-item";
+        item.innerHTML = `
+          <div class="relationship-heading">
+            <span>${from.emoji} ${from.name}</span>
+            <span>→</span>
+            <span>${to.emoji} ${to.name}</span>
+            <span class="relationship-type ${getRelationshipClass(relationship.type)}">${relationship.type}</span>
+          </div>
+          <p><strong>${relationship.label}：</strong>${relationship.explanation}</p>
+        `;
+        relationshipList.append(item);
+      });
+    }
+
+    function getRelationshipClass(type) {
+      if (type === "掠食" || type === "被捕食") return "predation";
+      if (type === "競爭") return "competition";
+      if (type === "共生") return "mutualism";
+      if (type === "分解") return "decomposition";
+      return "";
+    }
+
+    function renderFoodChain() {
+      foodChain.innerHTML = "";
+      levels.forEach((level) => {
+        const levelOrganisms = organisms.filter((organism) => organism.level === level);
+        const levelBox = document.createElement("section");
+        levelBox.className = "chain-level";
+        levelBox.innerHTML = `
+          <h3>${level}</h3>
+          <div class="chain-organisms">
+            ${levelOrganisms.map((organism) => `
+              <span class="chain-chip ${organism.id === selectedAnimalId ? "is-selected" : ""}">
+                <span aria-hidden="true">${organism.emoji}</span>${organism.name}
+              </span>
+            `).join("")}
+          </div>
+        `;
+        foodChain.append(levelBox);
+      });
+    }
+
+    function selectCategory(category) {
+      selectedCategory = category;
+      selectedRelationshipType = "全部";
+      const firstAnimal = organisms.find((organism) => organism.category === category);
+      selectedAnimalId = firstAnimal.id;
+      renderAll();
+    }
+
+    function selectAnimal(id) {
+      selectedAnimalId = id;
+      selectedRelationshipType = "全部";
+      renderAll();
+    }
+
+    function selectRelationshipType(type) {
+      selectedRelationshipType = type;
+      renderRelationshipFilters();
+      renderRelationships();
+    }
+
+    function renderAll() {
+      renderCategoryButtons();
+      renderAnimalButtons();
+      renderSelectedAnimal();
+      renderRelationshipFilters();
+      renderRelationships();
+      renderFoodChain();
+    }
+
+    renderAll();
+  </script>
+</body>
+</html>
