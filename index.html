@@ -275,7 +275,13 @@
     }
 
     .node {
-      cursor: pointer;
+      cursor: grab;
+      touch-action: none;
+      user-select: none;
+    }
+
+    .node.is-dragging {
+      cursor: grabbing;
     }
 
     .node circle {
@@ -671,7 +677,7 @@
           <span style="color: var(--gold)"><i class="swatch"></i>能量傳遞</span>
         </div>
         <div class="web-wrap" id="webWrap">
-          <svg id="foodWeb" viewBox="0 0 900 600" role="img" aria-label="食物鏈角色與互動關係圖">
+          <svg id="foodWeb" viewBox="0 0 1200 760" role="img" aria-label="食物鏈角色與互動關係圖">
             <defs>
               <marker id="arrowRed" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
                 <path d="M0,0 L0,6 L9,3 z" fill="#c95f3f"></path>
@@ -750,6 +756,26 @@
       deadOrganisms: { name: "動植物遺體", category: "分解物", level: "養分來源", emoji: "養分", x: 560, y: 500 }
     };
 
+    const organismOrigins = {
+      miscanthus: "原生種",
+      camphorLeaves: "原生種",
+      figTree: "原生種",
+      taiwanHare: "原生種",
+      muntjac: "原生種",
+      squirrel: "原生種",
+      grasshopper: "原生種",
+      snail: "原生種",
+      frog: "特有種",
+      mongoose: "原生種",
+      snake: "原生種",
+      eagle: "原生種",
+      bear: "特有亞種",
+      earthworm: "原生種",
+      millipede: "原生種",
+      mushroom: "原生種",
+      bacteria: "原生種"
+    };
+
     const relationships = [
       { from: "taiwanHare", to: "miscanthus", type: "掠食", label: "台灣野兔吃芒草", explanation: "台灣野兔吃草，芒草的能量傳給野兔。" },
       { from: "muntjac", to: "camphorLeaves", type: "掠食", label: "山羌吃樟樹葉", explanation: "山羌吃葉子和嫩芽，植物能量進入山羌身體。" },
@@ -788,14 +814,24 @@
     ];
 
     const addableOrganisms = [
-      { id: "pangolin", name: "台灣穿山甲", category: "肉食動物", level: "次級消費者", emoji: "🦔", description: "台灣穿山甲會吃螞蟻和白蟻，是台灣森林裡特別的食蟻動物。" },
-      { id: "civet", name: "白鼻心", category: "肉食動物", level: "次級消費者", emoji: "🐾", description: "白鼻心是雜食性動物，會吃果實、昆蟲和小動物。" },
-      { id: "macaque", name: "台灣獼猴", category: "草食動物", level: "初級消費者", emoji: "🐒", description: "台灣獼猴會吃果實、嫩葉和種子，也會幫植物散布種子。" },
-      { id: "owl", name: "領角鴞", category: "肉食動物", level: "頂級消費者", emoji: "🦉", description: "領角鴞是夜行性猛禽，會捕食昆蟲、蜥蜴和小型哺乳動物。" },
-      { id: "lizard", name: "斯文豪氏攀蜥", category: "肉食動物", level: "次級消費者", emoji: "🦎", description: "斯文豪氏攀蜥常在樹幹活動，會捕食昆蟲。" },
-      { id: "butterflyLarva", name: "蝴蝶幼蟲", category: "草食動物", level: "初級消費者", emoji: "🐛", description: "蝴蝶幼蟲會吃植物葉片，是許多鳥類和蜥蜴的食物。" },
-      { id: "cicada", name: "蟬", category: "草食動物", level: "初級消費者", emoji: "🪲", description: "蟬會吸食植物汁液，也可能被鳥類、蜥蜴或猛禽捕食。" },
-      { id: "termite", name: "白蟻", category: "分解者", level: "分解者", emoji: "🐜", description: "白蟻會分解枯木，也會成為台灣穿山甲的重要食物。" }
+      { id: "pangolin", name: "台灣穿山甲", origin: "原生種", category: "肉食動物", level: "次級消費者", emoji: "🦔", description: "台灣穿山甲會吃螞蟻和白蟻，是台灣森林裡特別的食蟻動物。" },
+      { id: "civet", name: "白鼻心", origin: "原生種", category: "肉食動物", level: "次級消費者", emoji: "🐾", description: "白鼻心是雜食性動物，會吃果實、昆蟲和小動物。" },
+      { id: "macaque", name: "台灣獼猴", origin: "特有種", category: "草食動物", level: "初級消費者", emoji: "🐒", description: "台灣獼猴會吃果實、嫩葉和種子，也會幫植物散布種子。" },
+      { id: "owl", name: "領角鴞", origin: "原生種", category: "肉食動物", level: "頂級消費者", emoji: "🦉", description: "領角鴞是夜行性猛禽，會捕食昆蟲、蜥蜴和小型哺乳動物。" },
+      { id: "lizard", name: "斯文豪氏攀蜥", origin: "特有種", category: "肉食動物", level: "次級消費者", emoji: "🦎", description: "斯文豪氏攀蜥常在樹幹活動，會捕食昆蟲。" },
+      { id: "butterflyLarva", name: "蝴蝶幼蟲", origin: "原生種", category: "草食動物", level: "初級消費者", emoji: "🐛", description: "蝴蝶幼蟲會吃植物葉片，是許多鳥類和蜥蜴的食物。" },
+      { id: "cicada", name: "蟬", origin: "原生種", category: "草食動物", level: "初級消費者", emoji: "🪲", description: "蟬會吸食植物汁液，也可能被鳥類、蜥蜴或猛禽捕食。" },
+      { id: "termite", name: "白蟻", origin: "原生種", category: "分解者", level: "分解者", emoji: "🐜", description: "白蟻會分解枯木，也會成為台灣穿山甲的重要食物。" },
+      { id: "leopardCat", name: "石虎", aliases: ["台灣石虎"], origin: "原生種", category: "肉食動物", level: "頂級消費者", emoji: "🐆", description: "石虎會捕食鼠類、鳥類和小型動物，是台灣低海拔食物網中的掠食者。" },
+      { id: "blueMagpie", name: "台灣藍鵲", origin: "特有種", category: "肉食動物", level: "次級消費者", emoji: "🐦", description: "台灣藍鵲會吃果實、昆蟲和小動物，也會幫植物散布種子。" },
+      { id: "mikadoPheasant", name: "帝雉", origin: "特有種", category: "草食動物", level: "初級消費者", emoji: "🐦", description: "帝雉會吃果實、種子和嫩芽，是台灣山林中的初級消費者。" },
+      { id: "treeFrog", name: "諸羅樹蛙", origin: "特有種", category: "肉食動物", level: "次級消費者", emoji: "🐸", description: "諸羅樹蛙會吃昆蟲，能把昆蟲的能量往上傳給蛇類或鳥類。" },
+      { id: "flycatcher", name: "黑枕藍鶲", origin: "原生種", category: "肉食動物", level: "次級消費者", emoji: "🐦", description: "黑枕藍鶲會捕食昆蟲，是森林和校園裡常見的小型食蟲鳥。" },
+      { id: "kestrel", name: "紅隼", origin: "原生種", category: "肉食動物", level: "頂級消費者", emoji: "🦅", description: "紅隼會捕食昆蟲、蜥蜴和小型鼠類，是空中的掠食者。" },
+      { id: "appleSnail", name: "福壽螺", origin: "外來種", category: "草食動物", level: "初級消費者", emoji: "🐌", description: "福壽螺是外來種，會吃水生植物和稻苗，影響濕地與農田生態。" },
+      { id: "bullfrog", name: "牛蛙", origin: "外來種", category: "肉食動物", level: "次級消費者", emoji: "🐸", description: "牛蛙是外來種，會捕食昆蟲、小魚、小蛙和其他小動物。" },
+      { id: "greenIguana", name: "綠鬣蜥", origin: "外來種", category: "草食動物", level: "初級消費者", emoji: "🦎", description: "綠鬣蜥是外來種，主要吃植物葉片和嫩芽，可能影響河岸植被。" },
+      { id: "redCrayfish", name: "美國螯蝦", origin: "外來種", category: "肉食動物", level: "次級消費者", emoji: "🦞", description: "美國螯蝦是外來種，會吃水生植物、小魚、螺類和腐食。" }
     ];
 
     const addableRelationships = [
@@ -811,7 +847,27 @@
       { from: "lizard", to: "butterflyLarva", type: "掠食", label: "斯文豪氏攀蜥吃蝴蝶幼蟲", explanation: "攀蜥會捕食小型昆蟲和幼蟲。" },
       { from: "butterflyLarva", to: "camphorLeaves", type: "掠食", label: "蝴蝶幼蟲吃葉片", explanation: "蝴蝶幼蟲吃植物葉片，是初級消費者。" },
       { from: "cicada", to: "figTree", type: "掠食", label: "蟬吸食樹汁", explanation: "蟬會吸食植物汁液，取得植物提供的能量。" },
-      { from: "eagle", to: "pangolin", type: "掠食", label: "大冠鷲可能捕食小型穿山甲", explanation: "猛禽有機會捕食較小或受傷的動物。" }
+      { from: "eagle", to: "pangolin", type: "掠食", label: "大冠鷲可能捕食小型穿山甲", explanation: "猛禽有機會捕食較小或受傷的動物。" },
+      { from: "leopardCat", to: "taiwanHare", type: "掠食", label: "石虎捕食台灣野兔", explanation: "石虎會捕食小型哺乳動物，是低海拔森林的掠食者。" },
+      { from: "leopardCat", to: "squirrel", type: "掠食", label: "石虎可能捕食赤腹松鼠", explanation: "石虎可能捕食松鼠、鳥類和鼠類。" },
+      { from: "leopardCat", to: "mongoose", type: "競爭", label: "石虎和食蟹獴競爭小動物", explanation: "牠們都可能捕食小型動物，所以可能競爭食物。" },
+      { from: "blueMagpie", to: "figTree", type: "掠食", label: "台灣藍鵲吃榕果", explanation: "台灣藍鵲吃果實，也會幫助種子散布。" },
+      { from: "blueMagpie", to: "cicada", type: "掠食", label: "台灣藍鵲吃蟬", explanation: "台灣藍鵲會吃昆蟲，把昆蟲能量往上傳。" },
+      { from: "mikadoPheasant", to: "figTree", type: "掠食", label: "帝雉吃果實", explanation: "帝雉吃果實、種子和嫩芽，是初級消費者。" },
+      { from: "eagle", to: "mikadoPheasant", type: "掠食", label: "大冠鷲可能捕食帝雉", explanation: "猛禽可能捕食鳥類或較小動物。" },
+      { from: "treeFrog", to: "cicada", type: "掠食", label: "諸羅樹蛙吃昆蟲", explanation: "諸羅樹蛙會吃昆蟲，是次級消費者。" },
+      { from: "snake", to: "treeFrog", type: "掠食", label: "赤尾青竹絲捕食諸羅樹蛙", explanation: "蛇類會捕食蛙類，能量繼續往上傳。" },
+      { from: "flycatcher", to: "cicada", type: "掠食", label: "黑枕藍鶲捕食昆蟲", explanation: "黑枕藍鶲吃昆蟲，是小型食蟲鳥。" },
+      { from: "kestrel", to: "lizard", type: "掠食", label: "紅隼捕食攀蜥", explanation: "紅隼會捕食蜥蜴和小型動物。" },
+      { from: "kestrel", to: "grasshopper", type: "掠食", label: "紅隼捕食大型昆蟲", explanation: "紅隼也會捕食大型昆蟲。" },
+      { from: "appleSnail", to: "camphorLeaves", type: "掠食", label: "福壽螺吃植物", explanation: "福壽螺會吃水生植物和嫩葉，是外來初級消費者。" },
+      { from: "mongoose", to: "appleSnail", type: "掠食", label: "食蟹獴可能吃福壽螺", explanation: "食蟹獴會吃螺類和其他小動物。" },
+      { from: "bullfrog", to: "treeFrog", type: "掠食", label: "牛蛙捕食小型蛙類", explanation: "牛蛙會捕食其他小蛙，可能影響原生蛙類。" },
+      { from: "bullfrog", to: "grasshopper", type: "掠食", label: "牛蛙吃昆蟲", explanation: "牛蛙會捕食昆蟲和小動物。" },
+      { from: "greenIguana", to: "camphorLeaves", type: "掠食", label: "綠鬣蜥吃植物葉片", explanation: "綠鬣蜥主要吃植物，是外來初級消費者。" },
+      { from: "greenIguana", to: "muntjac", type: "競爭", label: "綠鬣蜥和山羌競爭植物", explanation: "牠們都會吃植物，可能競爭植物資源。" },
+      { from: "redCrayfish", to: "snail", type: "掠食", label: "美國螯蝦吃螺類", explanation: "美國螯蝦會吃螺類、小魚和腐食。" },
+      { from: "redCrayfish", to: "deadOrganisms", type: "分解", label: "美國螯蝦吃腐食", explanation: "美國螯蝦會吃腐食，會參與水域養分循環。" }
     ];
 
     let selectedCategory = "草食動物";
@@ -828,6 +884,7 @@
     const edgeLayer = document.querySelector("#edgeLayer");
     const energyLayer = document.querySelector("#energyLayer");
     const nodeLayer = document.querySelector("#nodeLayer");
+    const foodWeb = document.querySelector("#foodWeb");
     const energyToggle = document.querySelector("#energyToggle");
     const energyNote = document.querySelector("#energyNote");
     const tutorButton = document.querySelector("#tutorButton");
@@ -837,9 +894,23 @@
     const chatForm = document.querySelector("#chatForm");
     const chatInput = document.querySelector("#chatInput");
     const chatSend = document.querySelector("#chatSend");
+    let dragState = null;
 
     function getOrganism(id) {
       return organisms.find((organism) => organism.id === id) || extraNames[id];
+    }
+
+    function getOrganismOrigin(organism) {
+      if (!organism) return "原生種";
+      return organism.origin || organismOrigins[organism.id] || "原生種";
+    }
+
+    function summarizeOrganism(organism) {
+      const related = relationships
+        .filter((relationship) => relationship.from === organism.id || relationship.to === organism.id)
+        .map((relationship) => relationship.label)
+        .join("，") || "目前可放入食物網，並依分類連到相近角色";
+      return `${organism.name}，${getOrganismOrigin(organism)}，${organism.category}，${organism.level}，${related}`;
     }
 
     function createSvg(tag, attrs = {}) {
@@ -903,6 +974,92 @@
       return line;
     }
 
+    function getSvgPoint(event) {
+      const point = foodWeb.createSVGPoint();
+      point.x = event.clientX;
+      point.y = event.clientY;
+      return point.matrixTransform(foodWeb.getScreenCTM().inverse());
+    }
+
+    function setNodePosition(id, x, y) {
+      const organism = organisms.find((item) => item.id === id);
+      if (organism) {
+        organism.x = x;
+        organism.y = y;
+        return;
+      }
+
+      if (extraNames[id]) {
+        extraNames[id].x = x;
+        extraNames[id].y = y;
+      }
+    }
+
+    function redrawEdges() {
+      edgeLayer.innerHTML = "";
+      energyLayer.innerHTML = "";
+
+      relationships.forEach((relationship) => {
+        if (relationship.to && getOrganism(relationship.to)?.x === undefined) return;
+        const className = `edge ${getRelationshipClass(relationship.type)} ${relationshipTouchesSelected(relationship) ? "is-active" : ""}`;
+        const marker = relationship.type === "掠食" ? "url(#arrowRed)" : relationship.type === "分解" ? "url(#arrowBrown)" : "";
+        const line = lineBetween(relationship.from, relationship.to, { className, marker });
+        if (line) edgeLayer.append(line);
+      });
+
+      energyFlows.forEach(([from, to]) => {
+        const line = lineBetween(from, to, { className: "edge energy", marker: "url(#arrowGold)" });
+        if (line) energyLayer.append(line);
+      });
+    }
+
+    function bindNodeDrag(group, id, options = {}) {
+      group.addEventListener("pointerdown", (event) => {
+        if (event.button !== undefined && event.button !== 0) return;
+        const start = getSvgPoint(event);
+        const item = getOrganism(id);
+        dragState = {
+          id,
+          group,
+          startX: start.x,
+          startY: start.y,
+          offsetX: start.x - item.x,
+          offsetY: start.y - item.y,
+          moved: false,
+          selectable: options.selectable !== false
+        };
+        group.classList.add("is-dragging");
+        group.setPointerCapture(event.pointerId);
+      });
+
+      group.addEventListener("pointermove", (event) => {
+        if (!dragState || dragState.id !== id) return;
+        const point = getSvgPoint(event);
+        const x = Math.max(34, Math.min(1166, point.x - dragState.offsetX));
+        const y = Math.max(34, Math.min(726, point.y - dragState.offsetY));
+        if (Math.abs(point.x - dragState.startX) > 3 || Math.abs(point.y - dragState.startY) > 3) {
+          dragState.moved = true;
+        }
+        setNodePosition(id, x, y);
+        group.setAttribute("transform", `translate(${x}, ${y})`);
+        redrawEdges();
+      });
+
+      group.addEventListener("pointerup", (event) => {
+        if (!dragState || dragState.id !== id) return;
+        group.classList.remove("is-dragging");
+        group.releasePointerCapture(event.pointerId);
+        const shouldSelect = dragState.selectable && !dragState.moved;
+        dragState = null;
+        if (shouldSelect) selectAnimal(id);
+      });
+
+      group.addEventListener("pointercancel", () => {
+        group.classList.remove("is-dragging");
+        dragState = null;
+      });
+    }
+
     function getNodeRadius(id) {
       return extraNames[id] ? 26 : 43;
     }
@@ -937,11 +1094,11 @@
 
     function findOpenPosition(category) {
       const columns = {
-        "草食動物": [170, 280, 390, 500],
-        "肉食動物": [430, 540, 650, 760, 840],
-        "分解者": [500, 610, 720, 830]
+        "草食動物": [170, 280, 390, 500, 610, 720, 830],
+        "肉食動物": [430, 540, 650, 760, 870, 980, 1090],
+        "分解者": [500, 610, 720, 830, 940, 1050]
       };
-      const rows = [58, 140, 222, 304, 386, 468, 548];
+      const rows = [58, 140, 222, 304, 386, 468, 548, 628, 708];
       const xs = columns[category] || [360, 470, 580];
 
       for (const x of xs) {
@@ -950,8 +1107,8 @@
         }
       }
 
-      for (let y = 58; y <= 548; y += 72) {
-        for (let x = 64; x <= 840; x += 76) {
+      for (let y = 58; y <= 708; y += 72) {
+        for (let x = 64; x <= 1120; x += 76) {
           if (isOpenPosition(x, y)) return { x, y };
         }
       }
@@ -962,7 +1119,8 @@
     function addMentionedOrganisms(text) {
       let added = false;
       addableOrganisms.forEach((candidate) => {
-        if (!text.includes(candidate.name)) return;
+        const names = [candidate.name, ...(candidate.aliases || [])];
+        if (!names.some((name) => text.includes(name))) return;
         if (organisms.some((organism) => organism.id === candidate.id)) return;
 
         const position = findOpenPosition(candidate.category);
@@ -1027,6 +1185,7 @@
             <div class="tags">
               <span class="tag">${organism.category}</span>
               <span class="tag">${organism.level}</span>
+              <span class="tag">${getOrganismOrigin(organism)}</span>
             </div>
           </div>
         </div>
@@ -1086,19 +1245,7 @@
       energyLayer.innerHTML = "";
       nodeLayer.innerHTML = "";
       webWrap.classList.toggle("show-energy", showEnergy);
-
-      relationships.forEach((relationship) => {
-        if (relationship.to && getOrganism(relationship.to)?.x === undefined) return;
-        const className = `edge ${getRelationshipClass(relationship.type)} ${relationshipTouchesSelected(relationship) ? "is-active" : ""}`;
-        const marker = relationship.type === "掠食" ? "url(#arrowRed)" : relationship.type === "分解" ? "url(#arrowBrown)" : "";
-        const line = lineBetween(relationship.from, relationship.to, { className, marker });
-        if (line) edgeLayer.append(line);
-      });
-
-      energyFlows.forEach(([from, to]) => {
-        const line = lineBetween(from, to, { className: "edge energy", marker: "url(#arrowGold)" });
-        if (line) energyLayer.append(line);
-      });
+      redrawEdges();
 
       const relatedIds = getRelatedIds();
       organisms.forEach((organism) => {
@@ -1115,7 +1262,7 @@
           <text class="name" y="18">${organism.name}</text>
           <text class="level" y="34">${organism.level}</text>
         `;
-        group.addEventListener("click", () => selectAnimal(organism.id));
+        bindNodeDrag(group, organism.id);
         group.addEventListener("keydown", (event) => {
           if (event.key === "Enter" || event.key === " ") {
             event.preventDefault();
@@ -1138,6 +1285,7 @@
           <text class="name" y="18">${item.name}</text>
           <text class="level" y="33">${item.level}</text>
         `;
+        bindNodeDrag(group, id, { selectable: false });
         nodeLayer.append(group);
       });
     }
@@ -1211,13 +1359,19 @@
       const visible = getVisibleRelationships()
         .map((relationship) => `${relationship.label}：${relationship.explanation}`)
         .join("；") || "目前沒有篩選到關係說明";
+      const currentOrganisms = organisms.map(summarizeOrganism).join("；");
+      const addableKnowledge = addableOrganisms.map(summarizeOrganism).join("；");
       return [
         `目前 web app 主題：小學生生態圈食物鏈互動學習。`,
-        `目前選到的生物：${selected.name}，分類：${selected.category}，層級：${selected.level}。`,
+        `目前選到的生物：${selected.name}，身分：${getOrganismOrigin(selected)}，分類：${selected.category}，層級：${selected.level}。`,
         `目前關係篩選：${selectedRelationshipType}。`,
         `畫面上的相關關係：${visible}。`,
+        `目前圖上的生物資料：${currentOrganisms}。`,
+        `可加入圖中的台灣動物資料：${addableKnowledge}。`,
+        `如果學生提到任何資料中的動物，回答一定要包含牠是原生種、特有種、特有亞種或外來種，以及牠在食物鏈中的關係。`,
         `如果需要舉其他台灣動物，優先使用這些可加入圖中的名稱：${addableOrganisms.map((organism) => organism.name).join("，")}。`,
         `回答時若提到上述名稱，前端會把該動物加入食物網。`,
+        `不要說不知道、不確定、不清楚。請根據資料用小學生能懂的方式回答。`,
         `學生問題：${question}`
       ].join("\n");
     }
